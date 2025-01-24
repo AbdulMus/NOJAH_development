@@ -30,6 +30,7 @@ public class CatalogManagementSystemLogin {
                 System.out.println("2. Add Item");
                 System.out.println("3. Edit Item");
                 System.out.println("4. Save and Exit");
+                System.out.println("5. Logout");
                 System.out.print("Choose an option: ");
                 int choice;
                 while (true) {
@@ -49,6 +50,10 @@ public class CatalogManagementSystemLogin {
                     case 4 -> {
                         saveCatalog();
                         running = false;
+                    }
+                    case 5 -> {
+                        System.out.println("Successfully logged out!");
+                        loginSuccess = false;
                     }
                     default -> System.out.println("Invalid choice. Please try again.");
                 }
