@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class CatalogManagementSystem {
-    private static String DATABASE_FILE = "catalog.csv";
-    private static List<Item> catalog = new ArrayList<>();
+    private static final String DATABASE_FILE = "catalog.csv";
+    private static final List<Item> catalog = new ArrayList<>();
 
     public static void main(String[] args) {
         loadCatalog();
@@ -11,33 +11,28 @@ public class CatalogManagementSystem {
         boolean running = true;
 
         while (running) {
-            System.out.println("\nCatalog Management System");
-            System.out.println("1. View Items");
-            System.out.println("2. Add Item");
-            System.out.println("3. Edit Item");
-            System.out.println("4. Save and Exit");
-            System.out.print("Choose an option: ");
-            int choice;
-            while (true) {
-                if (scanner.hasNextInt()) {
-                    choice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
-                    break;
-                } else {
-                    System.out.print("Invalid choice. Please try again: ");
-                    scanner.nextLine(); // Consume invalid input
-                }
-            }
+            try {
+                System.out.println("\nCatalog Management System");
+                System.out.println("1. View Items");
+                System.out.println("2. Add Item");
+                System.out.println("3. Edit Item");
+                System.out.println("4. Save and Exit");
+                System.out.print("Choose an option: ");
+                int choice = scanner.nextInt();
 
-            switch (choice) {
-                case 1 -> viewItems();
-                case 2 -> addItem(scanner);
-                case 3 -> editItem(scanner);
-                case 4 -> {
-                    saveCatalog();
-                    running = false;
+                switch (choice) {
+                    case 1 -> viewItems();
+                    case 2 -> addItem(scanner);
+                    case 3 -> editItem(scanner);
+                    case 4 -> {
+                        saveCatalog();
+                        running = false;
+                    }
+                    default -> System.out.println("Invalid choice. Please try again.");
                 }
-                default -> System.out.println("Invalid choice. Please try again.");
+            } catch (InputMismatchException e) {
+                System.out.println("Please input a valid number.");
+                scanner.nextLine(); // Clear invalid input
             }
         }
         scanner.close();
