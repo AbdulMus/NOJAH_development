@@ -17,8 +17,17 @@ public class CatalogManagementSystem {
             System.out.println("3. Edit Item");
             System.out.println("4. Save and Exit");
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            int choice;
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    break;
+                } else {
+                    System.out.print("Invalid choice. Please try again: ");
+                    scanner.nextLine(); // Consume invalid input
+                }
+            }
 
             switch (choice) {
                 case 1 -> viewItems();
