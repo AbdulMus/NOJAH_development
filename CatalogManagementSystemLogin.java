@@ -1,48 +1,36 @@
 import java.io.*;
 import java.util.*;
 
-public class CatalogManagementSystemLogin {
-    private static String DATABASE_FILE = "src/catalog.csv";
-    private static String LOGIN_FILE = "src/login.csv";
-    private static List<Item> catalog = new ArrayList<>();
-    private static HashMap<String, String> login = new HashMap<String, String>();
-
-    public static void main(String[] args) {
+public static void main(String[] args) {
         loadCatalog();
-        Scanner scanner = new Scanner(System.in);
-        boolean running = true;
-        boolean loginSuccess = false;
+        try (Scanner scanner = new Scanner(System.in)) {
+            boolean running = true;
+            boolean loginSuccess = false;
 
-        String name = "";
-        String pass = "";
-        while (running) {
-            if (!loginSuccess) {
-                System.out.println("Please enter your name: ");
-                name = scanner.nextLine();
-                System.out.println("Please enter your password: ");
-                pass = scanner.nextLine();
-            }
+            while (running) {
+                if (!loginSuccess) {
+                    System.out.println("Please enter your name: ");
+                    String name = scanner.nextLine().trim();
+                    System.out.println("Please enter your password: ");
+                    String pass = scanner.nextLine().trim();
 
-            if (isUser(name, pass)) {
-                loginSuccess = true;
+                    if (isUser(name, pass)) {
+                        loginSuccess = true;
+                        System.out.println("Login successful! Welcome, " + name + "!");
+                    } else {
+                        System.out.println("Invalid username or password. Please try again.");
+                        continue;
+                    }
+                }
+
                 System.out.println("\nCatalog Management System");
                 System.out.println("1. View Items");
                 System.out.println("2. Add Item");
                 System.out.println("3. Edit Item");
                 System.out.println("4. Save and Exit");
-                System.out.println("5. Logout");
                 System.out.print("Choose an option: ");
-                int choice;
-                while (true) {
-                    if (scanner.hasNextInt()) {
-                        choice = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
-                        break;
-                    } else {
-                        System.out.print("Invalid choice. Please try again: ");
-                        scanner.nextLine(); // Consume invalid input
-                    }
-                }
+
+                int choice = getValidIntInput(scanner);
                 switch (choice) {
                     case 1 -> viewItems();
                     case 2 -> addItem(scanner);
@@ -51,19 +39,10 @@ public class CatalogManagementSystemLogin {
                         saveCatalog();
                         running = false;
                     }
-                    case 5 -> {
-                        System.out.println("Successfully logged out!");
-                        loginSuccess = false;
-                    }
                     default -> System.out.println("Invalid choice. Please try again.");
                 }
-            } else if (!name.isEmpty() && !pass.isEmpty()) {
-                System.out.println("Invalid username or password. Please try again or leave username/password blank to exit");
-            } else {
-                running = false;
             }
         }
-        scanner.close();
     }
 
     private static void loadCatalog() {
