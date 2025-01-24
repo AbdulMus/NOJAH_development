@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class CatalogManagementSystem {
-    private static final String DATABASE_FILE = "catalog.csv";
-    private static final List<Item> catalog = new ArrayList<>();
+    private static String DATABASE_FILE = "catalog.csv";
+    private static List<Item> catalog = new ArrayList<>();
 
     public static void main(String[] args) {
         loadCatalog();
@@ -11,28 +11,33 @@ public class CatalogManagementSystem {
         boolean running = true;
 
         while (running) {
-            try {
-                System.out.println("\nCatalog Management System");
-                System.out.println("1. View Items");
-                System.out.println("2. Add Item");
-                System.out.println("3. Edit Item");
-                System.out.println("4. Save and Exit");
-                System.out.print("Choose an option: ");
-                int choice = scanner.nextInt();
-
-                switch (choice) {
-                    case 1 -> viewItems();
-                    case 2 -> addItem(scanner);
-                    case 3 -> editItem(scanner);
-                    case 4 -> {
-                        saveCatalog();
-                        running = false;
-                    }
-                    default -> System.out.println("Invalid choice. Please try again.");
+            System.out.println("\nCatalog Management System");
+            System.out.println("1. View Items");
+            System.out.println("2. Add Item");
+            System.out.println("3. Edit Item");
+            System.out.println("4. Save and Exit");
+            System.out.print("Choose an option: ");
+            int choice;
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    break;
+                } else {
+                    System.out.print("Invalid choice. Please try again: ");
+                    scanner.nextLine(); // Consume invalid input
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Please input a valid number.");
-                scanner.nextLine(); // Clear invalid input
+            }
+
+            switch (choice) {
+                case 1 -> viewItems();
+                case 2 -> addItem(scanner);
+                case 3 -> editItem(scanner);
+                case 4 -> {
+                    saveCatalog();
+                    running = false;
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
         scanner.close();
@@ -78,10 +83,13 @@ public class CatalogManagementSystem {
     private static void addItem(Scanner scanner) {
         System.out.print("Enter item ID: ");
         String id = scanner.nextLine();
+        
+        // Check if ID already exists
         if (findItemById(id) != null) {
             System.out.println("Item with ID " + id + " already exists. Item not added.");
             return;
         }
+        
         boolean idNumeric = true;
         try {
             Integer.parseInt(id);
@@ -93,12 +101,21 @@ public class CatalogManagementSystem {
             return;
         }
 
-        System.out.print("Enter item name: ");
-        String name = scanner.nextLine();
+        // Input validation for item name
+        String name;
+        while (true) {
+            System.out.print("Enter item name: ");
+            name = scanner.nextLine().trim();
+            if (!name.isEmpty()) {
+                break;
+            }
+            System.out.println("Item name cannot be empty. Please enter a valid name.");
+        }
+
         System.out.print("Enter item description: ");
         String description = scanner.nextLine();
 
-        if (id.isEmpty() || name.isEmpty() || description.isEmpty()) {
+        if (description.isEmpty()) {
             System.out.println("All fields are required. Item not added.");
             return;
         }
