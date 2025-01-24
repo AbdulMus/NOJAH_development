@@ -74,6 +74,17 @@ public class CatalogManagementSystem {
     private static void addItem(Scanner scanner) {
         System.out.print("Enter item ID: ");
         String id = scanner.nextLine();
+        boolean idNumeric = true;
+        try {
+            Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            idNumeric = false;
+        }
+        if (!idNumeric) {
+            System.out.println("ID not recognized. Use integer format.");
+            return;
+        }
+
         System.out.print("Enter item name: ");
         String name = scanner.nextLine();
         System.out.print("Enter item description: ");
