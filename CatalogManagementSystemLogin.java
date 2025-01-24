@@ -1,36 +1,52 @@
 import java.io.*;
 import java.util.*;
 
-public static void main(String[] args) {
+public class CatalogManagementSystemLogin {
+    private static String DATABASE_FILE = "src/catalog.csv";
+    private static String LOGIN_FILE = "src/login.csv";
+    private static List<Item> catalog = new ArrayList<>();
+    private static HashMap<String, String> login = new HashMap<String, String>();
+
+    public static void main(String[] args) {
         loadCatalog();
-        try (Scanner scanner = new Scanner(System.in)) {
-            boolean running = true;
-            boolean loginSuccess = false;
+        loadLoginData();
+        System.out.println("Loaded users: " + login);
 
-            while (running) {
-                if (!loginSuccess) {
-                    System.out.println("Please enter your name: ");
-                    String name = scanner.nextLine().trim();
-                    System.out.println("Please enter your password: ");
-                    String pass = scanner.nextLine().trim();
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+        boolean loginSuccess = false;
 
-                    if (isUser(name, pass)) {
-                        loginSuccess = true;
-                        System.out.println("Login successful! Welcome, " + name + "!");
-                    } else {
-                        System.out.println("Invalid username or password. Please try again.");
-                        continue;
-                    }
-                }
+        String name = "";
+        String pass = "";
+        while (running) {
+            if (!loginSuccess) {
+                System.out.println("Please enter your name: ");
+                name = scanner.nextLine();
+                System.out.println("Please enter your password: ");
+                pass = scanner.nextLine();
+            }
 
+            if (isUser(name, pass)) {
+                loginSuccess = true;
                 System.out.println("\nCatalog Management System");
                 System.out.println("1. View Items");
                 System.out.println("2. Add Item");
                 System.out.println("3. Edit Item");
                 System.out.println("4. Save and Exit");
-                System.out.print("Choose an option: ");
 
-                int choice = getValidIntInput(scanner);
+                int choice = -1; // Default invalid choice
+                while (true) {
+                    System.out.print("Choose an option: ");
+                    try {
+                        choice = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+                        break; // Valid input, exit loop
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter a number.");
+                        scanner.nextLine(); // Clear invalid input
+                    }
+                }
+
                 switch (choice) {
                     case 1 -> viewItems();
                     case 2 -> addItem(scanner);
@@ -39,10 +55,15 @@ public static void main(String[] args) {
                         saveCatalog();
                         running = false;
                     }
-                    default -> System.out.println("Invalid choice. Please try again.");
+                    default -> System.out.println("Invalid choice. Please select a valid option.");
                 }
+            } else if (!name.isEmpty() && !pass.isEmpty()) {
+                System.out.println("Invalid username or password. Please try again or leave username/password blank to exit");
+            } else {
+                running = false;
             }
         }
+
     }
 
     private static void loadCatalog() {
@@ -129,26 +150,33 @@ public static void main(String[] args) {
         return null;
     }
 
-    private static boolean isUser(String username, String password) {
+    private static void loadLoginData() {
         try (BufferedReader br = new BufferedReader(new FileReader(LOGIN_FILE))) {
             String line;
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    login.put(parts[0], parts[1]);
+                    login.put(parts[0].trim(), parts[1].trim()); // Add valid login entries
+                } else {
+                    System.out.println("Invalid line format: " + line); // For Debugging purpose and listing invalid lines
                 }
             }
         } catch (IOException e) {
-            System.out.println("No existing catalog found. Starting fresh.");
+            System.out.println("No existing login file found. Please ensure credentials are set.");
         }
-
-        for (String user : login.keySet()) {
-            if (user.equalsIgnoreCase(username) && login.get(user).equals(password)) {
-                return true;
-            }
-        }
-        return false;
     }
+
+
+    private static boolean isUser(String username, String password) {
+        return login.containsKey(username) && login.get(username).equals(password);
+    }
+
 }
 
 class Item {
