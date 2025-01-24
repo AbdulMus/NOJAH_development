@@ -1,4 +1,5 @@
-import java.awt.*;
+package src;
+
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -158,39 +159,39 @@ public class CatalogManagementSystem {
     }
 }
 
-class Item {
-    private final String id;
-    private String name;
-    private String description;
-
-    public Item(String id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "ID: " + id + ", Name: " + name + ", Description: " + description;
-    }
-}
+//class Item {
+//    private final String id;
+//    private String name;
+//    private String description;
+//
+//    public Item(String id, String name, String description) {
+//        this.id = id;
+//        this.name = name;
+//        this.description = description;
+//    }
+//
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "ID: " + id + ", Name: " + name + ", Description: " + description;
+//    }
+//}
