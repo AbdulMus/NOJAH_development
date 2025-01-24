@@ -1,5 +1,7 @@
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public class CatalogManagementSystem {
     private static String DATABASE_FILE = "catalog.csv";
@@ -42,6 +44,7 @@ public class CatalogManagementSystem {
         }
         scanner.close();
     }
+
 
     private static void loadCatalog() {
         try (BufferedReader br = new BufferedReader(new FileReader(DATABASE_FILE))) {
