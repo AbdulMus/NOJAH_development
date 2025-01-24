@@ -2,10 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class CatalogManagementSystemLogin {
-    private static String DATABASE_FILE = "src/catalog.csv";
-    private static String LOGIN_FILE = "src/login.csv";
-    private static List<Item> catalog = new ArrayList<>();
-    private static HashMap<String, String> login = new HashMap<String, String>();
+    private final static String DATABASE_FILE = "src/catalog.csv";
+    private final static String LOGIN_FILE = "src/login.csv";
+    private final static List<Item> catalog = new ArrayList<>();
+    private final static HashMap<String, String> login = new HashMap<String, String>();
 
     public static void main(String[] args) {
         loadCatalog();
