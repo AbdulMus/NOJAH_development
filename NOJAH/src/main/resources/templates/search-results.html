@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header>
+  <h1>Search Results for "<span th:text="${query}"></span>"</h1>
+</header>
+<main>
+  <div th:if="${searchResults.isEmpty()}">
+    <p>No products found.</p>
+  </div>
+  <div class="product-grid">
+    <div th:unless="${searchResults.isEmpty()}">
+      <div th:each="product : ${searchResults}" class="product">
+        <a th:href="@{/product{id}}">
+          <img th:src="${product.image}" th:alt="${product.name}">
+        </a>
+        <p th:text="${product.brand}"></p>
+        <h3 th:text="${product.name}"></h3>
+        <h4 th:text="${product.category}"></h4>
+        <p th:text="${product.description}"></p>
+      </div>
+    </div>
+  </div>
+  <a th:href="@{/}">Back to Home</a>
+</main>
+<footer>
+  <p>&copy; Created by Nimdula Perera.</p>
+</footer>
+</body>
+</html>

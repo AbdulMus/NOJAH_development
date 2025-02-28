@@ -1,0 +1,160 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fafafa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+header {
+    background-color: hotpink; /* Coral color */
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content Styles */
+main {
+    padding: 40px 20px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Search Form Styles */
+form {
+    margin-bottom: 40px;
+}
+
+form input[type="text"] {
+    padding: 12px;
+    width: 300px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus {
+    border-color: hotpink;
+}
+
+form button {
+    padding: 12px 25px;
+    background-color: lightpink;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: deeppink;
+}
+
+/* Product Grid with Flexbox */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Space between products */
+}
+
+/* Regular Product Box */
+.product {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 220px; /* Fixed width for regular products */
+    text-align: center;
+}
+
+/* Wider Search Result Box */
+.product.search-result {
+    width: 300px; /* Wider width for search results */
+}
+
+.product:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure images fit nicely within the product container */
+.product img {
+    width: 100%; /* Make image fill the container */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 200px; /* Limit maximum height */
+    object-fit: cover; /* Crop image to fit */
+    border-bottom: 2px solid pink;
+}
+
+.product h3 {
+    margin: 15px 0 10px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.product p {
+    margin: 0 15px 15px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Search Results Styles */
+.search-results {
+    margin-top: 20px;
+}
+
+.search-results h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Back Link Styles */
+a.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: pink;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+a.back-link:hover {
+    background-color: purple;
+}
