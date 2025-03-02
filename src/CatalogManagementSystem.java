@@ -1,12 +1,10 @@
-package src;
-
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
-
-
+import java.util.stream.Collectors;
 
 public class CatalogManagementSystem {
-    private final static String DATABASE_FILE = "src/catalog.csv";
+    private final static String DATABASE_FILE = Paths.get("").toAbsolutePath() + "/src/catalog.csv";
     private static final List<Item> catalog = new ArrayList<>();
 
     public static void main(String[] ignoredArgs) {
@@ -15,8 +13,6 @@ public class CatalogManagementSystem {
         boolean running = true;
 
         while (running) {
-            System.out.println(catalog); // DEBUGGING
-
             System.out.println("\nCatalog Management System");
             System.out.println("1. View Items");
             System.out.println("2. Add Item");
@@ -28,7 +24,7 @@ public class CatalogManagementSystem {
             System.out.print("Choose an option: ");
 
             int choice = getIntInput(scanner);
-            scanner.nextLine(); // Consume the newline after number input
+            scanner.nextLine();
 
             switch (choice) {
                 case 1 -> viewItems();
@@ -53,45 +49,109 @@ public class CatalogManagementSystem {
                 return scanner.nextInt();
             } catch (InputMismatchException e) {
                 System.out.print("Invalid input. Enter a number: ");
-                scanner.nextLine(); // Clear the invalid input
+                scanner.nextLine();
             }
         }
     }
 
     private static void loadCatalog() {
-        try (BufferedReader br = new BufferedReader(new FileReader(DATABASE_FILE))) {
-            String line;
-            br.readLine(); // Skip header
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",", -1);
-                if (parts.length >= 5) {
-                    catalog.add(new Item(parts[0], parts[1], parts[2], parts[3], parts[4]));
-                } else {
-                    System.out.println("Skipping invalid line in CSV: " + line);
+        System.out.println("Attempting to load catalog from: " + DATABASE_FILE);
+        
+        try {
+            // Create parent directories if they don't exist
+            Path path = Path.of(DATABASE_FILE);
+            if (!Files.exists(path.getParent())) {
+                Files.createDirectories(path.getParent());
+            }
+
+            // Create file if it doesn't exist
+            if (!Files.exists(path)) {
+                Files.createFile(path);
+                System.out.println("Created new catalog file");
+            }
+
+            try (BufferedReader br = new BufferedReader(new FileReader(DATABASE_FILE))) {
+                String line;
+                br.readLine(); // Skip header
+                while ((line = br.readLine()) != null) {
+                    List<String> parts = parseCsvLine(line);
+                    if (parts.size() >= 5) {
+                        catalog.add(new Item(
+                            parts.get(0).trim(),
+                            parts.get(1).trim(),
+                            parts.get(2).trim(),
+                            parts.get(3).trim(),
+                            parts.get(4).trim()
+                        ));
+                    }
                 }
+                System.out.println("Successfully loaded " + catalog.size() + " items");
             }
         } catch (IOException e) {
-            System.out.println("No existing catalog found. A new catalog will be created.");
+            System.out.println("Error loading catalog: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    private static List<String> parseCsvLine(String line) {
+        List<String> fields = new ArrayList<>();
+        StringBuilder field = new StringBuilder();
+        boolean inQuotes = false;
+
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '"') {
+                if (inQuotes && i < line.length() - 1 && line.charAt(i + 1) == '"') {
+                    field.append('"');
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (c == ',' && !inQuotes) {
+                fields.add(field.toString());
+                field.setLength(0);
+            } else {
+                field.append(c);
+            }
+        }
+        fields.add(field.toString());
+        return fields;
+    }
+
     private static void saveCatalog() {
+        System.out.println("Saving catalog to: " + DATABASE_FILE);
+        
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATABASE_FILE))) {
-            bw.write("ID,Name,Description,Category,Brand");
+            // Write header
+            bw.write(escapeCsvField("ID") + "," +
+                    escapeCsvField("Name") + "," +
+                    escapeCsvField("Description") + "," +
+                    escapeCsvField("Category") + "," +
+                    escapeCsvField("Brand"));
             bw.newLine();
+
+            // Write items
             for (Item item : catalog) {
-                bw.write(String.join(",",
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getCategory(),
-                        item.getBrand()));
+                String line = String.join(",",
+                        escapeCsvField(item.getId()),
+                        escapeCsvField(item.getName()),
+                        escapeCsvField(item.getDescription()),
+                        escapeCsvField(item.getCategory()),
+                        escapeCsvField(item.getBrand()));
+                bw.write(line);
                 bw.newLine();
             }
-            System.out.println("Catalog saved successfully.");
+            System.out.println("Successfully saved " + catalog.size() + " items");
         } catch (IOException e) {
             System.out.println("Error saving catalog: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    private static String escapeCsvField(String field) {
+        if (field == null || field.isEmpty()) return "\"\"";
+        String escaped = field.replace("\"", "\"\"");
+        return "\"" + escaped + "\"";
     }
 
     private static void viewItems() {
@@ -105,6 +165,16 @@ public class CatalogManagementSystem {
     private static void addItem(Scanner scanner) {
         System.out.print("Enter item ID: ");
         String id = scanner.nextLine().trim();
+        
+        // Validate numeric ID
+        try {
+            Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Error: ID must be a number. Item not added.");
+            return;
+        }
+        
+        // Check for duplicate ID
         if (findItemById(id) != null) {
             System.out.println("Error: An item with this ID already exists.");
             return;
@@ -112,15 +182,18 @@ public class CatalogManagementSystem {
 
         System.out.print("Enter name: ");
         String name = scanner.nextLine().trim();
-
         System.out.print("Enter description: ");
         String description = scanner.nextLine().trim();
-
         System.out.print("Enter category: ");
         String category = scanner.nextLine().trim();
-
         System.out.print("Enter brand: ");
         String brand = scanner.nextLine().trim();
+
+        // Validate all fields
+        if (name.isEmpty() || description.isEmpty() || category.isEmpty() || brand.isEmpty()) {
+            System.out.println("Error: All fields are required. Item not added.");
+            return;
+        }
 
         catalog.add(new Item(id, name, description, category, brand));
         System.out.println("Item added successfully.");
@@ -192,7 +265,7 @@ public class CatalogManagementSystem {
     private static void filterItems(Scanner scanner) {
         System.out.println("Filter by:\n1. Category\n2. Brand");
         int choice = getIntInput(scanner);
-        scanner.nextLine(); // Consume the newline
+        scanner.nextLine();
 
         switch (choice) {
             case 1 -> {
@@ -210,7 +283,11 @@ public class CatalogManagementSystem {
     }
 
     private static void filterBy(String value, String type) {
-        List<Item> results = catalog.stream().filter(item -> (type.equals("category")) ? item.getCategory().equalsIgnoreCase(value) : item.getBrand().equalsIgnoreCase(value)).toList();
+        List<Item> results = catalog.stream()
+                .filter(item -> (type.equals("category") 
+                        ? item.getCategory().equalsIgnoreCase(value) 
+                        : item.getBrand().equalsIgnoreCase(value)))
+                .collect(Collectors.toList());
         if (results.isEmpty()) {
             System.out.println("No items found.");
         } else {
@@ -229,8 +306,8 @@ public class CatalogManagementSystem {
         private final String id;
         private String name;
         private String description;
-        private String brand;
         private String category;
+        private String brand;
 
         public Item(String id, String name, String description, String category, String brand) {
             this.id = id;
@@ -240,45 +317,21 @@ public class CatalogManagementSystem {
             this.brand = brand;
         }
 
-        public String getId() {
-            return id;
-        }
+        public String getId() { return id; }
+        public String getName() { return name; }
+        public String getDescription() { return description; }
+        public String getCategory() { return category; }
+        public String getBrand() { return brand; }
 
-        public String getName() {
-            return name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public String getCategory() {
-            return this.category;
-        }
-
-        public String getBrand() {
-            return this.brand;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public void setCategory(String category) {
-            this.category = category;
-        }
-
-        public void setBrand(String brand) {
-            this.brand = brand;
-        }
+        public void setName(String name) { this.name = name; }
+        public void setDescription(String description) { this.description = description; }
+        public void setCategory(String category) { this.category = category; }
+        public void setBrand(String brand) { this.brand = brand; }
 
         @Override
         public String toString() {
-            return "ID: " + id + ", Name: " + name + ", Description: " + description;
+            return String.format("ID: %s, Name: %s, Description: %s, Category: %s, Brand: %s",
+                    id, name, description, category, brand);
         }
     }
 }
