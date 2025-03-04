@@ -10,8 +10,8 @@ body {
 
 /* Header Styles */
 header {
-    background-color: hotpink; /* Coral color */
-    padding: 30px 20px;
+    background-color: hotpink;
+    padding: 20px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -23,6 +23,57 @@ header h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Flexbox Navigation Bar Fix */
+.nav-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 10px;
+    flex-wrap: nowrap;
+}
+
+.nav-bar a, .nav-bar p {
+    margin: 0;
+    color: white;
+    font-size: 1rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.nav-bar a:hover {
+    text-decoration: underline;
+}
+
+/* Container for "Logged in: User + Logout" */
+.user-info{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.user-info p {
+    margin: 0;
+    color: white;
+}
+
+.admin{
+    margin-left: -10px;
+    margin-right: 10px;
+}
+
+.logged-in{
+    margin-left: -10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.logged-in p{
+    margin: 0;
+    color: white;
+}
+
 /* Main Content Styles */
 main {
     padding: 40px 20px;
@@ -32,11 +83,11 @@ main {
 }
 
 /* Search Form Styles */
-form {
+.search-form {
     margin-bottom: 40px;
 }
 
-form input[type="text"] {
+.search-form input[type="text"] {
     padding: 12px;
     width: 300px;
     border: 2px solid #ddd;
@@ -46,11 +97,11 @@ form input[type="text"] {
     transition: border-color 0.3s ease;
 }
 
-form input[type="text"]:focus {
+.search-form input[type="text"]:focus {
     border-color: hotpink;
 }
 
-form button {
+.search-form button {
     padding: 12px 25px;
     background-color: lightpink;
     color: white;
@@ -61,7 +112,7 @@ form button {
     transition: background-color 0.3s ease;
 }
 
-form button:hover {
+.search-form button:hover {
     background-color: deeppink;
 }
 
@@ -70,23 +121,17 @@ form button:hover {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px; /* Space between products */
+    gap: 20px;
 }
 
-/* Regular Product Box */
 .product {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 220px; /* Fixed width for regular products */
+    width: 220px;
     text-align: center;
-}
-
-/* Wider Search Result Box */
-.product.search-result {
-    width: 300px; /* Wider width for search results */
 }
 
 .product:hover {
@@ -94,12 +139,11 @@ form button:hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Ensure images fit nicely within the product container */
 .product img {
-    width: 100%; /* Make image fill the container */
-    height: auto; /* Maintain aspect ratio */
-    max-height: 200px; /* Limit maximum height */
-    object-fit: cover; /* Crop image to fit */
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
     border-bottom: 2px solid pink;
 }
 
@@ -113,17 +157,6 @@ form button:hover {
     margin: 0 15px 15px;
     font-size: 0.9rem;
     color: #666;
-}
-
-/* Search Results Styles */
-.search-results {
-    margin-top: 20px;
-}
-
-.search-results h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 20px;
 }
 
 /* Footer Styles */
@@ -141,20 +174,5 @@ footer {
 footer p {
     margin: 0;
     font-size: 0.9rem;
-}
-
-/* Back Link Styles */
-a.back-link {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: pink;
     color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    transition: background-color 0.3s ease;
-}
-
-a.back-link:hover {
-    background-color: purple;
 }

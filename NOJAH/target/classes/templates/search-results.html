@@ -1,36 +1,74 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search Results</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <title>Search Results - Makeup & Beauty</title>
+  <link rel="stylesheet" th:href="@{/css/searchstyle.css}">
 </head>
 <body>
+
 <header>
-  <h1>Search Results for "<span th:text="${query}"></span>"</h1>
+  <a class="home" href="/">
+    <h1>Makeup & Beauty Inventory</h1>
+  </a>
+  <nav>
+    <span th:if="${isAdmin}">
+      <a href="/admin">Admin Dashboard</a>
+    </span>
+    <span th:if="${isLoggedIn}">
+      <a href="/logout">Logout</a>
+    </span>
+    <span th:unless="${isLoggedIn}">
+      <a href="/login">Login</a>
+    </span>
+  </nav>
 </header>
-<main>
-  <div th:if="${searchResults.isEmpty()}">
-    <p>No products found.</p>
-  </div>
-  <div class="product-grid">
-    <div th:unless="${searchResults.isEmpty()}">
-      <div th:each="product : ${searchResults}" class="product">
-        <a th:href="@{/product{id}}">
-          <img th:src="${product.image}" th:alt="${product.name}">
-        </a>
-        <p th:text="${product.brand}"></p>
-        <h3 th:text="${product.name}"></h3>
-        <h4 th:text="${product.category}"></h4>
-        <p th:text="${product.description}"></p>
+
+<div class="main-container">
+  <!-- Sidebar for Categories/Filters -->
+  <aside class="sidebar">
+    <h3>Categories</h3>
+    <ul>
+      <li><a href="/search?query=Face">Face</a></li>
+      <li><a href="/search?query=Eye">Eye</a></li>
+      <li><a href="/search?query=Lip">Lip</a></li>
+      <li><a href="/search?query=Cheek">Cheek</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="product-section">
+    <form th:action="@{/search}" method="get" class="search-form">
+      <label>
+        <input type="text" name="query" placeholder="Search for products..." required>
+      </label>
+      <button type="submit">Search</button>
+    </form>
+
+    <h2>Search Results for "<span th:text="${query}"></span>"</h2>
+
+    <div th:if="${searchResults.isEmpty()}">
+      <p>No products found matching your criteria.</p>
+    </div>
+
+    <div class="product-grid" th:unless="${searchResults.isEmpty()}">
+      <div class="product-card" th:each="product : ${searchResults}">
+        <div class="product-info">
+          <a th:href="@{/product{id}(id=${product.id})}">
+            <img th:src="${product.image}" alt="Product Image">
+            <h3 th:text="${product.name}"></h3>
+          </a>
+          <p><strong>Made By:</strong> <span th:text="${product.brand}"></span></p>
+          <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
+        </div>
       </div>
     </div>
-  </div>
-  <a th:href="@{/}">Back to Home</a>
-</main>
+
+  </main>
+</div>
+
 <footer>
-  <p>&copy; Created by Nimdula Perera.</p>
+  <p>NOJAH Development Demo.</p>
 </footer>
+
 </body>
 </html>

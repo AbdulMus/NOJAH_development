@@ -9,7 +9,8 @@ public class Product {
     private String category;
 
     // Constructor
-    public Product(String name, String brand, String description,String category, String image) {
+    public Product(Integer id, String name, String brand, String description,String category, String image) {
+        this.id = id;
         this.name = name;
         this.brand = brand;
         this.description = description;
@@ -17,6 +18,13 @@ public class Product {
         this.image = image;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
