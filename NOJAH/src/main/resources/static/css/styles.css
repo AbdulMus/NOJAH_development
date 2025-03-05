@@ -103,7 +103,7 @@ main {
 
 .search-form button {
     padding: 12px 25px;
-    background-color: lightpink;
+    background-color: deeppink;
     color: white;
     border: none;
     border-radius: 25px;
@@ -113,7 +113,7 @@ main {
 }
 
 .search-form button:hover {
-    background-color: deeppink;
+    opacity: 0.7;
 }
 
 /* Product Grid with Flexbox */
