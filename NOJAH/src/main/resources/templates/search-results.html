@@ -35,24 +35,33 @@
       <li><a href="/search?query=Cheek">Cheek</a></li>
     </ul>
     <h3 class="filters">Filter Products</h3>
-    <form action="/filter" method="get" class="filter-form">
+    <form action="/search" method="get" class="filter-form">
       <label for="category">Category:</label>
       <select name="category" id="category">
         <option value="">All Categories</option>
-        <option value="Face">Face</option>
-        <option value="Eye">Eye</option>
-        <option value="Lip">Lip</option>
-        <option value="Cheek">Cheek</option>
+        <option th:each="category : ${categories}"
+                th:value="${category}"
+                th:text="${category}"
+                th:selected="${selectedCategory == category}">
+        </option>
       </select>
+
       <label for="brand">Brand:</label>
       <select name="brand" id="brand">
         <option value="">All Brands</option>
-        <option value="Charlotte Tilbury">Charlotte Tilbury</option>
-        <option value="Stila">Stila</option>
-        <option value="Summer Fridays">Summer Fridays</option>
-        <option value="Milk Makeup">Milk Makeup</option>
+        <option th:each="brand : ${brands}"
+                th:value="${brand}"
+                th:text="${brand}"
+                th:selected="${selectedBrand == brand}">
+        </option>
       </select>
+      <input type="hidden" name="query" th:value="${query}" />
       <button type="submit">Apply Filters</button>
+
+    </form>
+    <form action="/search" method="get" class="reset-form" id="reset-form">
+      <input type="hidden" name="query" th:value="${query}" />
+      <button type="submit" class="btn">Reset Filters</button>
     </form>
   </aside>
 

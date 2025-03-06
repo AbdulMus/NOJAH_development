@@ -50,6 +50,25 @@ public class HomeController {
         }
     }
 
+    public void saveProductsToCSV(Product product) {
+        String productLine = String.join(",",
+                String.valueOf(product.getId()),  // Product ID
+                product.getName(),               // Product name
+                product.getBrand(),              // Product brand
+                product.getDescription(),        // Product description
+                product.getCategory(),           // Product category
+                product.getImage()               // Product image
+        );
+        // Append the new product to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/catalog.csv", true))) {
+            writer.newLine(); // Add a newline before appending the product
+            writer.write(productLine);
+            System.out.println("Writing CSV file: " + productLine);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void loadUsersFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -85,23 +104,40 @@ public class HomeController {
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam String query, Model model, HttpSession session) {
+    public String search(@RequestParam String query,
+                         @RequestParam(required = false) String category,
+                         @RequestParam(required = false) String brand,
+                         @RequestParam(required = false) String reset,  // Added to handle reset button
+                         Model model, HttpSession session) {
+
         query = query.toLowerCase();
         ArrayList<Product> searchResults = new ArrayList<>();
+        Set<String> filteredCategories = new HashSet<>();
+        Set<String> filteredBrands = new HashSet<>();
+
         for (Product product : products) {
-            if (product.getName().toLowerCase().contains(query) ||
+            boolean matchesQuery = product.getName().toLowerCase().contains(query) ||
                     product.getBrand().toLowerCase().contains(query) ||
                     product.getDescription().toLowerCase().contains(query) ||
-                    product.getCategory().toLowerCase().contains(query)) {
+                    product.getCategory().toLowerCase().contains(query);
+
+            boolean matchesCategory = (category == null || category.isEmpty()) || product.getCategory().equalsIgnoreCase(category);
+            boolean matchesBrand = (brand == null || brand.isEmpty()) || product.getBrand().equalsIgnoreCase(brand);
+
+            if (matchesQuery && matchesCategory && matchesBrand) {
                 searchResults.add(product);
+                filteredCategories.add(product.getCategory());
+                filteredBrands.add(product.getBrand());
             }
         }
 
         checkUser(model, session);
-
         model.addAttribute("searchResults", searchResults);
         model.addAttribute("query", query);
-        model.addAttribute("products", products);
+        model.addAttribute("categories", filteredCategories);
+        model.addAttribute("brands", filteredBrands);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("selectedBrand", brand);
 
         return "search-results";
     }
@@ -153,42 +189,64 @@ public class HomeController {
             @RequestParam("image") MultipartFile image,
             HttpSession session) {
 
+        // Check if the user is logged in and has 'admin' role
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
 
-        if (!image.isEmpty()) {
-            try {
-                // Define folder path
-                String uploadDir = "src/main/resources/static/images/";
-
-                // Create folder if not exists
-                File directory = new File(uploadDir);
-                if (!directory.exists()) {
-                    directory.mkdirs();
-                }
-
-                // Create file path
-                String filePath = uploadDir + image.getOriginalFilename();
-                File file = new File(filePath);
-
-                // Save file
-                image.transferTo(file);
-
-                // You can save just the relative path if you want
-                String imagePath = "/images/" + image.getOriginalFilename();
-
-                // Save product (assuming you have a list or a repository)
-                int newId = products.size() + 1;
-                products.add(new Product(newId, name, brand, description, category, imagePath));
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "redirect:/login";
-            }
+        // Validate form data
+        if (name == null || name.isEmpty() || brand == null || brand.isEmpty() ||
+                description == null || description.isEmpty() || category == null || category.isEmpty()) {
+            return "redirect:/admin?error=Please fill in all fields";
         }
 
-        return "redirect:/admin";
+        if (image.isEmpty()) {
+            return "redirect:/admin?error=Please upload an image";
+        }
+
+        try {
+            // Define folder path (make sure it's a valid, writable directory)
+            String uploadDir = "src/main/resources/static/images/";
+
+            // Create folder if it doesn't exist
+            File directory = new File(uploadDir);
+            if (!directory.exists()) {
+                directory.mkdirs();  // Create the directory if it doesn't exist
+            }
+
+            // Handle image file naming (avoid collisions)
+            String imageName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+            String filePath = uploadDir + imageName;
+            File file = new File(filePath);
+
+            // Save the file using transferTo
+//            image.transferTo(file);
+
+            //  if transferTo doesn't work, you can use FileOutputStream like this:
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                byte[] bytes = image.getBytes();
+                fos.write(bytes);
+                fos.flush();
+            }
+
+            // Save the relative image path for web access
+            String imagePath = "/images/" + imageName;
+
+            // Add the new product (assuming you have a list or a repository)
+            int newId = products.size() + 1;  // Generating ID based on list size
+            Product newProduct = new Product(newId, name, brand, description, category, imagePath);
+            System.out.println(imagePath);
+            products.add(newProduct);  // Add product to the in-memory list
+            saveProductsToCSV(newProduct);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "redirect:/admin?error=Failed to upload image. Please try again.";
+        }
+
+        // Redirect to the admin page with success message
+        return "redirect:/admin?success=Product added successfully";
     }
 
     @PostMapping("/delete-product")
