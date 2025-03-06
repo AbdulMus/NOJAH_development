@@ -137,9 +137,27 @@ nav a:hover {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    margin-bottom: -10px;
 }
 
 .filter-form button:hover {
+    background-color: #b10050;
+    opacity: 0.9;
+}
+
+.reset-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #d10060;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.reset-form button:hover {
     background-color: #b10050;
     opacity: 0.9;
 }

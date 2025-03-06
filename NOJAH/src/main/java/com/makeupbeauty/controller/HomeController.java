@@ -179,6 +179,7 @@ public class HomeController {
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
+        checkUser(model, session);
         model.addAttribute("products", products);
         return "admin";
     }

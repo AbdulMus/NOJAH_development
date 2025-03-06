@@ -2,37 +2,67 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
-<h1>Admin Dashboard</h1>
+<header>
+  <a class="home" href="/">
+    <h1>Makeup & Beauty Inventory</h1>
+  </a>
+  <nav>
+    <span class="logged-in">Logged in: <span th:text="${username}"></span></span>
+    <a href="/logout">Logout</a>
+  </nav>
+</header>
 
-<h2>Add Product</h2>
-<form method="post" th:action="@{/add-product}" enctype="multipart/form-data">
-  <input type="text" name="name" placeholder="Name" required>
-  <input type="text" name="brand" placeholder="Brand" required>
-  <input type="text" name="description" placeholder="Description" required>
-  <input type="text" name="category" placeholder="Category" required>
-  <input type="file" name="image" accept="image/*" required>
-  <button type="submit">Add Product</button>
-</form>
-
-<h2>Product List</h2>
-<table border="1">
-  <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
-  <tr th:each="product : ${products}">
-    <td th:text="${product.id}"></td>
-    <td th:text="${product.name}"></td>
-    <td>
-      <form method="post" th:action="@{/delete-product}">
-        <input type="hidden" name="id" th:value="${product.id}">
-        <button type="submit">Delete</button>
+<main>
+  <div class="dashboard-container">
+    <div class="form-container">
+      <h2>Add Product</h2>
+      <form method="post" th:action="@{/add-product}" enctype="multipart/form-data">
+        <div class="name_and_brand">
+          <input type="text" name="name" placeholder="Name" required>
+          <input type="text" name="brand" placeholder="Brand" required>
+        </div>
+        <div class="category_and_image">
+          <input type="text" name="category" placeholder="Category" required>
+          <input type="file" name="image" accept=".png, .jpg" required>
+        </div>
+        <div class="description">
+          <textarea name="description" rows="3" placeholder="Enter product description..."></textarea>
+        </div>
+        <button type="submit">Add Product</button>
       </form>
-    </td>
-  </tr>
-</table>
+    </div>
 
-<a href="/">Back to Home</a>
-<a href="/logout">Logout</a>
+    <div class="product-list-container">
+      <h2>Product List</h2>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Image</th>
+          <th>Actions</th>
+        </tr>
+        <tr th:each="product : ${products}">
+          <td th:text="${product.id}"></td>
+          <td th:text="${product.name}"></td>
+          <td>
+            <img th:src="@{${product.image}}" alt="Product Image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          </td>
+          <td>
+            <form method="post" th:action="@{/delete-product}">
+              <input type="hidden" name="id" th:value="${product.id}">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>NOJAH Development Demo.</p>
+</footer>
 </body>
 </html>

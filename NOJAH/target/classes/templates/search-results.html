@@ -57,8 +57,8 @@
       </select>
       <input type="hidden" name="query" th:value="${query}" />
       <button type="submit">Apply Filters</button>
-
     </form>
+
     <form action="/search" method="get" class="reset-form" id="reset-form">
       <input type="hidden" name="query" th:value="${query}" />
       <button type="submit" class="btn">Reset Filters</button>
@@ -76,23 +76,6 @@
     </form>
 
     <h2>Search Results for "<span th:text="${query}"></span>"</h2>
-
-<!--    <div th:if="${filtered.isEmpty()}">-->
-<!--      <p>No products found matching your criteria.</p>-->
-<!--    </div>-->
-
-<!--    <div class="product-grid" th:unless="${filtered.isEmpty()}">-->
-<!--      <div class="product-card" th:each="product : ${filtered}">-->
-<!--        <div class="product-info">-->
-<!--          <a th:href="@{/product{id}(id=${product.id})}">-->
-<!--            <img th:src="${product.image}" alt="Product Image">-->
-<!--            <h3 th:text="${product.name}"></h3>-->
-<!--          </a>-->
-<!--          <p><strong>Made By:</strong> <span th:text="${product.brand}"></span></p>-->
-<!--          <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
 
     <div th:if="${searchResults.isEmpty()}">
       <p>No products found matching your criteria.</p>
