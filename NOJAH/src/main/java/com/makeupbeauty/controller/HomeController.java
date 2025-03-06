@@ -54,7 +54,7 @@ public class HomeController {
     }
 
     public void saveProductsToCSV(Product product) {
-        String productLine = String.join(",",
+        String productLine = String.join("|,|",
                 String.valueOf(product.getId()),  // Product ID
                 product.getName(),               // Product name
                 product.getBrand(),              // Product brand
@@ -66,7 +66,6 @@ public class HomeController {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/catalog.txt", true))) {
             writer.newLine(); // Add a newline before appending the product
             writer.write(productLine);
-            System.out.println("Writing CSV file: " + productLine);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -260,6 +259,56 @@ public class HomeController {
         }
 
         products.removeIf(product -> product.getId() == id);
+
+        String filepath = "src/main/resources/catalog.txt";
+        StringBuilder updatedContent = new StringBuilder();
+        String imagePathToDelete = null; // Store image path to delete later
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String header = br.readLine(); // Read and store the header
+            updatedContent.append(header).append("\n"); // Ensure header is preserved
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\|,\\|");
+                String id1 = values[0].trim();
+                String imagePath = values[5].trim(); // Assuming image path is stored in column 6
+
+                if (id == Integer.parseInt(id1)) {
+                    System.out.println(imagePath);
+                    imagePathToDelete = imagePath; // Save image path for deletion
+                    continue; // Skip writing this line
+                }
+                updatedContent.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Write the updated content back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
+            String trimmedContent = updatedContent.toString().trim();
+            writer.write(trimmedContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Delete the image file if it exists
+        if (imagePathToDelete != null) {
+            imagePathToDelete = imagePathToDelete.substring(1);
+
+            File imageFile = new File(imagePathToDelete);
+            if (imageFile.exists() && imageFile.isFile()) {
+                if (imageFile.delete()) {
+                    System.out.println("Image deleted successfully: " + imagePathToDelete);
+                } else {
+                    System.err.println("Failed to delete image: " + imagePathToDelete);
+                }
+            } else {
+                System.err.println("Image not found: " + imagePathToDelete);
+            }
+        }
 
         return "redirect:/admin";
     }
