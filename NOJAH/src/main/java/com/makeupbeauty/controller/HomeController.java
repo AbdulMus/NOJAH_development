@@ -101,6 +101,7 @@ public class HomeController {
 
         model.addAttribute("searchResults", searchResults);
         model.addAttribute("query", query);
+        model.addAttribute("products", products);
 
         return "search-results";
     }
@@ -229,23 +230,46 @@ public class HomeController {
         return "redirect:/admin";
     }
 
+    @GetMapping("/product/{id}")
+    public String product(@PathVariable int id, Model model, HttpSession session) {
+        Product foundProduct = null;
+        for (Product product : products) {
+            if (product.getId() == id) {
+                foundProduct = product;
+                break;
+            }
+        }
+
+        if (foundProduct != null) {
+            model.addAttribute("product", foundProduct);
+            checkUser(model, session);
+            return "product"; // Use the new template
+        } else {
+            return "redirect:/"; // Redirect if product not found
+        }
+    }
+
     @GetMapping("/product1")
-    public String product1() {
+    public String product1(Model model, HttpSession session) {
+        checkUser(model, session);
         return "product1";
     }
 
     @GetMapping("/product2")
-    public String product2() {
+    public String product2(Model model, HttpSession session) {
+        checkUser(model, session);
         return "product2";
     }
 
     @GetMapping("/product3")
-    public String product3() {
+    public String product3(Model model, HttpSession session) {
+        checkUser(model, session);
         return "product3";
     }
 
     @GetMapping("/product4")
-    public String product4() {
+    public String product4(Model model, HttpSession session) {
+        checkUser(model, session);
         return "product4";
     }
 }

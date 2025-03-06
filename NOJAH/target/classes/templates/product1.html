@@ -1,28 +1,49 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product 1</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutorial</title>
+  <link th:href="@{/css/product.css}" rel="stylesheet">
+  <meta name="robots" content="noindex,follow" />
+
 </head>
-<body>
+
 <header>
-  <!--Name-->
-  <h1>Matte Revolution Hydrating Lipstick</h1>
+  <a class="home" href="/">
+    <h1>Makeup & Beauty Inventory</h1>
+  </a>
+  <nav>
+    <span th:if="${isAdmin}">
+      <a href="/admin">Admin Dashboard</a>
+    </span>
+    <span th:if="${isLoggedIn}">
+      <a href="/logout">Logout</a>
+    </span>
+    <span th:unless="${isLoggedIn}">
+      <a href="/login">Login</a>
+    </span>
+  </nav>
 </header>
-<main>
-  <img th:src="@{/images/1.jpg}" alt="lipstickimg" style="max-width:300px;">
-  <!--Brand-->
-  <h2>Charlotte Tilbury</h2>
-  <!--Category-->
-  <h3>Lip</h3>
-  <!--Description-->
-  <p>A matte lipstick that features a long-lasting, buildable, and hydrating formula.</p>
-  <a th:href="@{/}">Back to Home</a>
+
+<body>
+<main class="container">
+
+  <!-- Image -->
+  <div class="left-column">
+    <img class="active" th:src="@{/images/1.jpg}" alt="eyelinerimg">
+  </div>
+
+
+  <!-- Right Column -->
+  <div class="right-column">
+    <!-- Product Description -->
+    <div class="product-description">
+      <h1>Matte Revolution Hydrating Lipstick</h1>
+      <span>Charlotte Tilbury</span>
+      <p>A matte lipstick with hydrating formula.</p>
+    </div>
+  </div>
 </main>
-<footer>
-  <p>NOJAH Development Demo.</p>
-</footer>
 </body>
 </html>

@@ -4,36 +4,58 @@
   <title>Search Results - Makeup & Beauty</title>
   <link rel="stylesheet" th:href="@{/css/searchstyle.css}">
 </head>
-<body>
 
 <header>
   <a class="home" href="/">
     <h1>Makeup & Beauty Inventory</h1>
   </a>
   <nav>
-    <span th:if="${isAdmin}">
-      <a href="/admin">Admin Dashboard</a>
-    </span>
-    <span th:if="${isLoggedIn}">
-      <a href="/logout">Logout</a>
-    </span>
+        <span th:if="${isAdmin}">
+            <a href="/admin">Admin Dashboard</a>
+        </span>
+    <span class="logged-in" th:if="${isLoggedIn}">
+            <span>Logged in: <span th:text="${username}"></span></span>
+            <a href="/logout">Logout</a>
+        </span>
     <span th:unless="${isLoggedIn}">
-      <a href="/login">Login</a>
-    </span>
+            <a href="/login">Login</a>
+        </span>
   </nav>
 </header>
 
+<body>
 <div class="main-container">
   <!-- Sidebar for Categories/Filters -->
   <aside class="sidebar">
-    <h3>Filters</h3>
+    <h3>Categories</h3>
     <ul>
       <li><a href="/search?query=Face">Face</a></li>
       <li><a href="/search?query=Eye">Eye</a></li>
       <li><a href="/search?query=Lip">Lip</a></li>
       <li><a href="/search?query=Cheek">Cheek</a></li>
     </ul>
+    <h3 class="filters">Filter Products</h3>
+    <form action="/filter" method="get" class="filter-form">
+      <label for="category">Category:</label>
+      <select name="category" id="category">
+        <option value="">All Categories</option>
+        <option value="Face">Face</option>
+        <option value="Eye">Eye</option>
+        <option value="Lip">Lip</option>
+        <option value="Cheek">Cheek</option>
+      </select>
+      <label for="brand">Brand:</label>
+      <select name="brand" id="brand">
+        <option value="">All Brands</option>
+        <option value="Charlotte Tilbury">Charlotte Tilbury</option>
+        <option value="Stila">Stila</option>
+        <option value="Summer Fridays">Summer Fridays</option>
+        <option value="Milk Makeup">Milk Makeup</option>
+      </select>
+      <button type="submit">Apply Filters</button>
+    </form>
   </aside>
+
 
   <!-- Main Content Area -->
   <main class="product-section">
@@ -46,6 +68,23 @@
 
     <h2>Search Results for "<span th:text="${query}"></span>"</h2>
 
+<!--    <div th:if="${filtered.isEmpty()}">-->
+<!--      <p>No products found matching your criteria.</p>-->
+<!--    </div>-->
+
+<!--    <div class="product-grid" th:unless="${filtered.isEmpty()}">-->
+<!--      <div class="product-card" th:each="product : ${filtered}">-->
+<!--        <div class="product-info">-->
+<!--          <a th:href="@{/product{id}(id=${product.id})}">-->
+<!--            <img th:src="${product.image}" alt="Product Image">-->
+<!--            <h3 th:text="${product.name}"></h3>-->
+<!--          </a>-->
+<!--          <p><strong>Made By:</strong> <span th:text="${product.brand}"></span></p>-->
+<!--          <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
     <div th:if="${searchResults.isEmpty()}">
       <p>No products found matching your criteria.</p>
     </div>
@@ -53,7 +92,7 @@
     <div class="product-grid" th:unless="${searchResults.isEmpty()}">
       <div class="product-card" th:each="product : ${searchResults}">
         <div class="product-info">
-          <a th:href="@{/product{id}(id=${product.id})}">
+          <a th:href="@{/product/{id}(id=${product.id})}">
             <img th:src="${product.image}" alt="Product Image">
             <h3 th:text="${product.name}"></h3>
           </a>

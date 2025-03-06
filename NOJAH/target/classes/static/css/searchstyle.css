@@ -11,6 +11,7 @@ body {
     color: #333;
 }
 
+/* Header Styles */
 header {
     background-color: #d10060;
     color: white;
@@ -18,32 +19,56 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
-header h1{
+header h1 {
     color: white;
     font-size: 24px;
+    margin: 0;
 }
 
-header a{
+header a {
     text-decoration: none;
+    color: white;
 }
 
 header a:hover {
     opacity: 0.7;
 }
 
+/* Navigation Styles */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 nav a {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
     font-weight: bold;
     transition: opacity 0.3s;
+    font-family: 'Helvetica', sans-serif;
 }
 
 nav a:hover {
     opacity: 0.7;
+}
+
+.logged-in {
+    font-family: 'Helvetica', sans-serif;
+    font-weight: bold;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.logged-in span span{
+    margin-left: -5px;
+    margin-right: 10px;
 }
 
 .main-container {
@@ -69,8 +94,60 @@ nav a:hover {
     padding-bottom: 5px;
 }
 
+/* Filter Form Section */
+.filters {
+    margin-top: 20px;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-form label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: -10px;
+}
+
+.filter-form select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.filter-form select:focus {
+    border-color: #ff599e;
+}
+
+.filter-form button {
+    padding: 10px;
+    background-color: #d10060;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.filter-form button:hover {
+    background-color: #b10050;
+    opacity: 0.9;
+}
+
+/* Sidebar Links (if you still have them) */
 .sidebar ul {
     list-style: none;
+    padding: 0;
 }
 
 .sidebar ul li {
@@ -142,16 +219,16 @@ nav a:hover {
 
 /* Product Grid */
 .product-grid {
-    display: flex; /* Use flexbox for better alignment */
-    flex-wrap: wrap; /* Allow wrapping to the next line for responsiveness */
-    gap: 20px; /* Spacing between products */
-    justify-content: flex-start; /* Align items to the left */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
 }
 
 /* Product Card */
 .product-card {
-    flex: 1 1 calc(33.33% - 20px); /* Adjust for 3 items per row with gap */
-    max-width: 350px; /* Ensure consistent width */
+    flex: 1 1 calc(33.33% - 20px);
+    max-width: 350px;
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
@@ -166,10 +243,10 @@ nav a:hover {
 }
 
 .product-card img {
-    width: 100%; /* Ensure the image spans the full width */
-    height: 180px; /* Set a fixed height for uniformity */
-    object-fit: cover; /* Ensure the image fits nicely without distortion */
-    border-bottom: 1px solid #ddd; /* Separate the image from the text */
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
 }
 
 .product-info {

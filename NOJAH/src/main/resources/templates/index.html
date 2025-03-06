@@ -6,26 +6,26 @@
   <title>Makeup & Beauty</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body>
+
 <header>
-  <h1>Welcome to Makeup & Beauty</h1>
-  <nav class="nav-bar">
-    <a href="/">Home</a>
-    <div class="user-info">
-      <span class="admin" th:if="${isAdmin}">
-        <a href="/admin">Admin Dashboard</a>
-      </span>
-      <span class="logged-in" th:if="${isLoggedIn}">
-        <p>Logged in: <span th:text="${username}"></span></p>
-        <a href="/logout">Logout</a>
-      </span>
-      <span th:unless="${isLoggedIn}">
-        <a href="/login">Login</a>
-      </span>
-    </div>
+  <a class="home" href="/">
+    <h1>Makeup & Beauty Inventory</h1>
+  </a>
+  <nav>
+        <span th:if="${isAdmin}">
+            <a href="/admin">Admin Dashboard</a>
+        </span>
+    <span class="logged-in" th:if="${isLoggedIn}">
+            <span>Logged in: <span th:text="${username}"></span></span>
+            <a href="/logout">Logout</a>
+        </span>
+    <span th:unless="${isLoggedIn}">
+            <a href="/login">Login</a>
+        </span>
   </nav>
 </header>
 
+<body>
 <main>
   <form th:action="@{/search}" method="get" class="search-form">
     <label>
@@ -36,19 +36,14 @@
 
   <h2>Featured Products</h2>
   <div class="product-grid">
-    <div class="product">
-      <a th:href="@{/product1}">
-        <img th:src="@{/images/1.jpg}" alt="Lipstick">
-        <h3>Lipstick</h3>
-      </a>
-      <p>A matte lipstick featuring a long-lasting, hydrating formula.</p>
-    </div>
-    <div class="product">
-      <a th:href="@{/product2}">
-        <img th:src="@{/images/2.jpg}" alt="Eyeliner">
-        <h3>Eyeliner</h3>
-      </a>
-      <p>A waterproof liquid liner that lasts all day and night.</p>
+    <div class="product-card" th:each="product : ${products}">
+      <div class="product-info">
+        <a th:href="@{/product/{id}(id=${product.id})}">
+          <img th:src="${product.image}" alt="Product Image">
+          <h3 th:text="${product.name}"></h3>
+        </a>
+        <p><strong>Made By:</strong> <span th:text="${product.brand}"></span></p>
+      </div>
     </div>
   </div>
 </main>
