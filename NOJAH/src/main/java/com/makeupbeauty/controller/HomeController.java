@@ -9,6 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.*;
 
+import org.springframework.core.io.*;
+import java.nio.file.*;
+
 @Controller
 public class HomeController {
 
@@ -206,7 +209,7 @@ public class HomeController {
 
         try {
             // Define folder path (make sure it's a valid, writable directory)
-            String uploadDir = "src/main/resources/static/images/";
+            String uploadDir = "uploads/";
 
             // Create folder if it doesn't exist
             File directory = new File(uploadDir);
@@ -230,7 +233,7 @@ public class HomeController {
             }
 
             // Save the relative image path for web access
-            String imagePath = "/images/" + imageName;
+            String imagePath = "/uploads/" + imageName;
 
             // Add the new product (assuming you have a list or a repository)
             int newId = products.size() + 1;  // Generating ID based on list size
@@ -287,6 +290,23 @@ public class HomeController {
 
         return "redirect:/admin";
     }
+
+    @RestController
+    public class FileController {
+        private static final String UPLOAD_DIR = "uploads/";
+
+        @GetMapping("/uploads/{filename:.+}")
+        @ResponseBody
+        public Resource serveFile(@PathVariable String filename) {
+            try {
+                Path filePath = Paths.get(UPLOAD_DIR).resolve(filename).normalize();
+                return new UrlResource(filePath.toUri());
+            } catch (Exception e) {
+                throw new RuntimeException("File not found: " + filename);
+            }
+        }
+    }
+
 
     @GetMapping("/product/{id}")
     public String product(@PathVariable int id, Model model, HttpSession session) {
