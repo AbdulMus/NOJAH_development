@@ -50,7 +50,7 @@ header a:hover {
 
 /* Main Content Styles */
 main {
-    padding: 40px 10px;
+    padding: 40px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -58,16 +58,16 @@ main {
 /* Dashboard Container */
 .dashboard-container {
     display: flex;
-    gap: 40px;
+    gap: 50px;
     align-items: flex-start;
     flex-wrap: nowrap;
-    margin-left: -20px;
+    margin-left: -40px;
 }
 
 /* Form Container */
 .form-container {
     flex: 1;
-    max-width: 45%;
+    max-width: 80%;
 }
 
 /* Product List Container */
@@ -179,9 +179,14 @@ table th, table td {
 }
 
 table th {
+    text-align: center;
     background-color: #d10060;
     color: white;
     font-weight: bold;
+}
+
+table th[name="name"]{
+    text-align: left;
 }
 
 table tr:hover {

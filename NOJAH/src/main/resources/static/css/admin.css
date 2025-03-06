@@ -179,9 +179,14 @@ table th, table td {
 }
 
 table th {
+    text-align: center;
     background-color: #d10060;
     color: white;
     font-weight: bold;
+}
+
+table th[name="name"]{
+    text-align: left;
 }
 
 table tr:hover {

@@ -17,11 +17,9 @@
 
 <main>
   <div class="dashboard-container">
-    <!-- Add Product Form on the Left -->
     <div class="form-container">
       <h2>Add Product</h2>
       <form method="post" th:action="@{/add-product}" enctype="multipart/form-data">
-        <!-- Name and Brand inputs side by side -->
         <div class="name_and_brand">
           <input type="text" name="name" placeholder="Name" required>
           <input type="text" name="brand" placeholder="Brand" required>
@@ -37,21 +35,27 @@
       </form>
     </div>
 
-    <!-- Product List on the Right -->
     <div class="product-list-container">
       <h2>Product List</h2>
       <table>
         <tr>
           <th>ID</th>
-          <th>Name</th>
+          <th name="name">Name</th>
           <th>Image</th>
-          <th>Actions</th>
+          <th>Update</th>
+          <th>Delete</th>
         </tr>
         <tr th:each="product : ${products}">
           <td th:text="${product.id}"></td>
           <td th:text="${product.name}"></td>
           <td>
             <img th:src="@{${product.image}}" alt="Product Image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          </td>
+          <td>
+            <form method="post" th:action="@{/update-product}">
+              <input type="hidden" name="id" th:value="${product.id}">
+              <button type="submit">Update</button>
+            </form>
           </td>
           <td>
             <form method="post" th:action="@{/delete-product}">

@@ -19,7 +19,7 @@ public class HomeController {
     private final HashMap<String, String> users = new HashMap<>(); // Mocked user credentials
 
     public HomeController() {
-        loadProductsFromCSV("src/main/resources/catalog.csv");
+        loadProductsFromCSV("src/main/resources/catalog.txt");
         loadUsersFromCSV("src/main/resources/users.csv");
     }
 
@@ -30,7 +30,7 @@ public class HomeController {
 
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty()) continue; // skip empty lines
-                String[] values = line.split(",");
+                String[] values = line.split("\\|,\\|");
 
                 System.out.println("Reading line: " + line);
 
@@ -63,7 +63,7 @@ public class HomeController {
                 product.getImage()               // Product image
         );
         // Append the new product to the CSV file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/catalog.csv", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/catalog.txt", true))) {
             writer.newLine(); // Add a newline before appending the product
             writer.write(productLine);
             System.out.println("Writing CSV file: " + productLine);

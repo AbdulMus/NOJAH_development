@@ -40,15 +40,22 @@
       <table>
         <tr>
           <th>ID</th>
-          <th>Name</th>
+          <th name="name">Name</th>
           <th>Image</th>
-          <th>Actions</th>
+          <th>Update</th>
+          <th>Delete</th>
         </tr>
         <tr th:each="product : ${products}">
           <td th:text="${product.id}"></td>
           <td th:text="${product.name}"></td>
           <td>
             <img th:src="@{${product.image}}" alt="Product Image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          </td>
+          <td>
+            <form method="post" th:action="@{/update-product}">
+              <input type="hidden" name="id" th:value="${product.id}">
+              <button type="submit">Update</button>
+            </form>
           </td>
           <td>
             <form method="post" th:action="@{/delete-product}">
