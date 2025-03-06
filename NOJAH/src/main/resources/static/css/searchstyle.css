@@ -75,6 +75,7 @@ nav a:hover {
     display: flex;
     margin: 20px;
     gap: 20px;
+    flex: 1;
 }
 
 /* Sidebar */
@@ -214,9 +215,34 @@ nav a:hover {
     transition: background-color 0.3s ease;
 }
 
-.search-form button:hover {
-    opacity: 0.7;
+.search-form button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
 }
+
+.search-form button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.search-form button:hover span {
+    padding-right: 25px;
+}
+
+.search-form button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+/*.search-form button:hover {*/
+/*    opacity: 0.7;*/
+/*}*/
 
 /* Product Section */
 .product-section {
@@ -286,14 +312,14 @@ nav a:hover {
     margin: 0;
 }
 
-/* Footer */
 footer {
     text-align: center;
     padding: 15px;
     background-color: #d10060;
     color: white;
-    margin-top: 20px;
     font-size: 14px;
+    width: 100%;
+    margin-top: 20px;
 }
 
 /* Responsive */

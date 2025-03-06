@@ -53,6 +53,7 @@ main {
     padding: 40px 10px;
     max-width: 1200px;
     margin: 0 auto;
+    flex: 1;
 }
 
 /* Dashboard Container */
@@ -69,13 +70,6 @@ main {
     flex: 1;
     max-width: 45%;
 }
-
-/* Product List Container */
-.product-list-container {
-    flex: 1;
-    max-width: 55%;
-}
-
 
 /* Form Styles */
 form {
@@ -161,6 +155,17 @@ form button:hover {
     background-color: #b00050;
 }
 
+.update-container {
+    margin-top: 30px;
+    border-radius: 8px;
+}
+
+/* Product List Container */
+.product-list-container {
+    flex: 1;
+    max-width: 55%;
+}
+
 /* Table Styles */
 table {
     width: 100%;
@@ -208,20 +213,12 @@ table button:hover {
     background-color: #b00050;
 }
 
-/* Footer Styles */
 footer {
-    background-color: #333;
-    color: white;
     text-align: center;
     padding: 15px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-}
-
-footer p {
-    margin: 0;
-    font-size: 0.9rem;
+    background-color: #d10060;
     color: white;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 20px;
 }

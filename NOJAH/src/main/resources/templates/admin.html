@@ -17,6 +17,7 @@
 
 <main>
   <div class="dashboard-container">
+    <!-- Form Container -->
     <div class="form-container">
       <h2>Add Product</h2>
       <form method="post" th:action="@{/add-product}" enctype="multipart/form-data">
@@ -33,8 +34,38 @@
         </div>
         <button type="submit">Add Product</button>
       </form>
+
+      <!-- Update Container -->
+      <div class="update-container">
+        <h2>Update Product</h2>
+        <form method="post" th:action="@{/update-product}" enctype="multipart/form-data">
+          <div class="old-product">
+            <label for="category">Choose Product:</label>
+            <select name="category" id="category">
+              <option th:each="product : ${products}"
+                      th:value="${product.id}"
+                      th:text="${product.name}"
+                      th:selected="${selectedProduct == product.name}">
+              </option>
+            </select>
+          </div>
+          <div class="name_and_brand">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="brand" placeholder="Brand" required>
+          </div>
+          <div class="category_and_image">
+            <input type="text" name="category" placeholder="Category" required>
+            <input type="file" name="image" accept=".png, .jpg" required>
+          </div>
+          <div class="description">
+            <textarea name="description" rows="3" placeholder="Product description..."></textarea>
+          </div>
+          <button type="submit">Update Product</button>
+        </form>
+      </div>
     </div>
 
+    <!-- Product List Container -->
     <div class="product-list-container">
       <h2>Product List</h2>
       <table>

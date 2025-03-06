@@ -50,32 +50,26 @@ header a:hover {
 
 /* Main Content Styles */
 main {
-    padding: 40px;
+    padding: 40px 10px;
     max-width: 1200px;
     margin: 0 auto;
+    flex: 1;
 }
 
 /* Dashboard Container */
 .dashboard-container {
     display: flex;
-    gap: 50px;
+    gap: 40px;
     align-items: flex-start;
     flex-wrap: nowrap;
-    margin-left: -40px;
+    margin-left: -20px;
 }
 
 /* Form Container */
 .form-container {
     flex: 1;
-    max-width: 80%;
+    max-width: 45%;
 }
-
-/* Product List Container */
-.product-list-container {
-    flex: 1;
-    max-width: 55%;
-}
-
 
 /* Form Styles */
 form {
@@ -161,6 +155,17 @@ form button:hover {
     background-color: #b00050;
 }
 
+.update-container {
+    margin-top: 30px;
+    border-radius: 8px;
+}
+
+/* Product List Container */
+.product-list-container {
+    flex: 1;
+    max-width: 55%;
+}
+
 /* Table Styles */
 table {
     width: 100%;
@@ -207,21 +212,96 @@ table button {
 table button:hover {
     background-color: #b00050;
 }
+/*!* Form Styles *!*/
+/*form {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 15px;*/
+/*    padding: 25px;*/
+/*    background-color: white;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);*/
+/*}*/
 
-/* Footer Styles */
+/*!*!* Style for the input row container *!*!*/
+/*!*.name_and_brand {*!*/
+/*!*    display: flex;*!*/
+/*!*    gap: 15px;*!*/
+/*!*}*!*/
+
+/*!*.name_and_brand input {*!*/
+/*!*    flex: 1;*!*/
+/*!*}*!*/
+
+/*!*.category_and_image {*!*/
+/*!*    display: flex;*!*/
+/*!*    gap: 15px;*!*/
+/*!*}*!*/
+
+/*!*.category_and_image input {*!*/
+/*!*    flex: 1;*!*/
+/*!*}*!*/
+
+/*!*form input[name="description"] {*!*/
+/*!*    width: 95%;*!*/
+/*!*}*!*/
+
+/*form textarea {*/
+/*    font-family: 'Helvetica', sans-serif;*/
+/*    width: 95%;*/
+/*    padding: 12px;*/
+/*    border: 2px solid #ddd;*/
+/*    border-radius: 5px;*/
+/*    font-size: 1rem;*/
+/*    outline: none;*/
+/*    resize: vertical;*/
+/*    min-height: 50px;*/
+/*    max-height: 300px;*/
+/*    transition: border-color 0.3s ease;*/
+/*}*/
+
+/*form textarea:focus {*/
+/*    border-color: #d10060;*/
+/*}*/
+
+/*form input[name="image"]{*/
+/*    width: 90%;*/
+/*}*/
+
+/*form input[type="text"], form input[type="file"] {*/
+/*    padding: 12px;*/
+/*    border: 2px solid #ddd;*/
+/*    border-radius: 5px;*/
+/*    font-size: 1rem;*/
+/*    outline: none;*/
+/*    transition: border-color 0.3s ease;*/
+/*}*/
+
+/*form input[type="text"]:focus, form input[type="file"]:focus {*/
+/*    border-color: #d10060;*/
+/*}*/
+
+/*form button {*/
+/*    padding: 12px 25px;*/
+/*    background-color: #d10060;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    font-size: 1rem;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s ease;*/
+/*}*/
+
+/*form button:hover {*/
+/*    background-color: #b00050;*/
+/*}*/
+
 footer {
-    background-color: #333;
-    color: white;
     text-align: center;
     padding: 15px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-}
-
-footer p {
-    margin: 0;
-    font-size: 0.9rem;
+    background-color: #d10060;
     color: white;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 20px;
 }
