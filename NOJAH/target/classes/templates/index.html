@@ -15,7 +15,9 @@
         <span th:if="${isAdmin}">
             <a href="/admin">Admin Dashboard</a>
         </span>
+
     <span class="logged-in" th:if="${isLoggedIn}">
+            <a href="/my-favorites">My Favorites</a>
             <span>Logged in: <span th:text="${username}"></span></span>
             <a href="/logout">Logout</a>
         </span>

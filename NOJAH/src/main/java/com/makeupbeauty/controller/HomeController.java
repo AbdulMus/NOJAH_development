@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.*;
 import java.nio.file.*;
@@ -17,11 +19,138 @@ public class HomeController {
 
     private final ArrayList<Product> products = new ArrayList<>();
     private final HashMap<String, String> users = new HashMap<>(); // Mocked user credentials
+    private final Map<String, Set<Integer>> userFavorites = new HashMap<>(); //
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class); // <------- this is better than printStackTrace()
 
+    // constructor init method
+    public void loadFavoritesFromCSV(String filePath) {
+        File favFile = new File(filePath);
+        if (!favFile.exists()) {
+            logger.warn("favorites.csv does not exist yet.");
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] values = line.split(",");
+                if (values.length == 2) {
+                    String username = values[0].trim();
+                    int productId = Integer.parseInt(values[1].trim());
+
+                    // Add to the userFavorites map
+                    userFavorites.putIfAbsent(username, new HashSet<>());
+                    userFavorites.get(username).add(productId);
+                }
+            }
+            logger.info("Favorites successfully loaded from {}", filePath);
+        } catch (IOException e) {
+            logger.error("Failed to load favorites from {}: {}", filePath, e.getMessage(), e);
+        }
+    }
+
+    // method is run everytime you save
+    public void saveFavoriteToCSV(String username, int productId) {
+        String fav_line = username + "," + productId;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/favorites.csv", true))) {
+            writer.newLine();
+            writer.write(fav_line);
+            logger.info("User '{}' favorited product {}", username, productId);
+        } catch (IOException e) {
+            logger.error("Failed to save favorite: {}", e.getMessage(), e);
+        }
+    }
+
+    // constructor
     public HomeController() {
         loadProductsFromCSV("src/main/resources/catalog.txt");
         loadUsersFromCSV("src/main/resources/users.csv");
+        loadFavoritesFromCSV("src/main/resources/favorites.csv");
     }
+
+    @PostMapping("/favorite")
+    public String addFavorite(@RequestParam(required = false) Integer productId, HttpSession session) {
+        if (productId == null) {
+            System.err.println("OOPS! ERROR: productId is null!");
+            return "redirect:/error?message=Product ID is missing";
+        }
+
+        String username = (String) session.getAttribute("user");
+        if (username == null) {
+            return "redirect:/login";
+        }
+
+        System.out.println("OK: User " + username + " favorited product: " + productId);
+
+        userFavorites.putIfAbsent(username, new HashSet<>());
+        if (!userFavorites.get(username).contains(productId)) {
+            userFavorites.get(username).add(productId);
+            saveFavoriteToCSV(username, productId);
+        }
+
+        return "redirect:/product/" + productId + "?success=Added to favorites";
+    }
+
+    @PostMapping("/unfavorite")
+    public String removeFavorite(@RequestParam int productId, HttpSession session) {
+        String username = (String) session.getAttribute("user");
+        if (username == null) {
+            return "redirect:/login";
+        }
+
+        // Remove product from user's favorites
+        Set<Integer> favSet = userFavorites.getOrDefault(username, new HashSet<>());
+        if (favSet.contains(productId)) {
+            favSet.remove(productId);
+            rewriteFavoritesCSV("src/main/resources/favorites.csv");
+        }
+
+        return "redirect:/my-favorites?success=Removed+from+favorites";
+    }
+
+    private void rewriteFavoritesCSV(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("username,productId"); // Keep the header
+            writer.newLine();
+
+            for (String user : userFavorites.keySet()) {
+                for (Integer pid : userFavorites.get(user)) {
+                    writer.write(user + "," + pid);
+                    writer.newLine();
+                }
+            }
+            logger.info("Favorites file successfully updated.");
+        } catch (IOException e) {
+            logger.error("Failed to update favorites.csv: {}", e.getMessage(), e);
+        }
+    }
+
+
+
+    @GetMapping("/my-favorites")
+    public String showFavorites(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("user");
+        if (username == null) {
+            return "redirect:/login";
+        }
+
+        // Get the product IDs that the (current) user added to favs
+        Set<Integer> favIds = userFavorites.getOrDefault(username, new HashSet<>());
+
+        // Grab IDS of the product before turning them into the product objects of an ArrList
+        List<Product> favProducts = new ArrayList<>();
+        for (Product p : products) {
+            if (favIds.contains(p.getId())) {
+                favProducts.add(p);
+            }
+        }
+
+        model.addAttribute("favProducts", favProducts);
+        return "favorites"; // Loads the favorites.html endpoint thingy
+    }
+
 
     public void loadProductsFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -56,11 +185,11 @@ public class HomeController {
     public void saveProductsToCSV(Product product) {
         String productLine = String.join("|,|",
                 String.valueOf(product.getId()),  // Product ID
-                product.getName(),               // Product name
-                product.getBrand(),              // Product brand
-                product.getDescription(),        // Product description
-                product.getCategory(),           // Product category
-                product.getImage()               // Product image
+                product.getName(),                // Product name
+                product.getBrand(),               // Product brand
+                product.getDescription(),         // Product description
+                product.getCategory(),            // Product category
+                product.getImage()                // Product image
         );
         // Append the new product to the CSV file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/catalog.txt", true))) {
