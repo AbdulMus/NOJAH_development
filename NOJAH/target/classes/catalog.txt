@@ -1,5 +1,5 @@
 id, name, brand, description, category, image
-1|,|Matte Revolution Hydrating Lipstick|,|Charlotte Tilbury|,| A matte lipstick with hydrating formula.|,|Lip|,|/uploads/1.jpg
+1|,|test|,|Charlotte Tilbury|,|A matte lipstick with hydrating formula.|,|Lip|,|/uploads/1741732602087_Figure_2 (1).png
 2|,|Stay All Day Waterproof Liquid Eye Liner|,|Stila|,|Waterproof liquid liner.|,|Eye|,|/uploads/2.jpg
 3|,|Lip Butter Balm for Hydration & Shine|,|Summer Fridays|,|A silky vegan balm that hydrates and soothes dry lips in seconds.|,|Lip|,|/uploads/3.jpg
 4|,|Hydro Grip 12-Hour Hydrating Gel Skin Tint|,|Milk Makeup|,|A clean non-comedogenic 12-hour hydrating gel skin tint with triple-powered hyaluronic acid and buildable light-to-medium coverage for a natural dewy finish.|,|Face|,|/uploads/4.jpg

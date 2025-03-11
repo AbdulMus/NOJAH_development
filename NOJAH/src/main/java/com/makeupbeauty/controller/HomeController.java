@@ -182,6 +182,94 @@ public class HomeController {
         }
     }
 
+    public String saveImage(MultipartFile image) throws IOException {
+        String uploadDir = "uploads/";
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // Generate a unique filename
+        String imageName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+        String filePath = uploadDir + imageName;
+        File file = new File(filePath);
+
+        // Save file
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(image.getBytes());
+            fos.flush();
+        }
+
+        return "/uploads/" + imageName;  // Return relative path for web access
+    }
+
+    public void deleteImage(String imagePathToDelete) throws IOException {
+        if (imagePathToDelete != null) {
+            imagePathToDelete = imagePathToDelete.substring(1);
+
+            File imageFile = new File(imagePathToDelete);
+            if (imageFile.exists() && imageFile.isFile()) {
+                if (imageFile.delete()) {
+                    System.out.println("Image deleted successfully: " + imagePathToDelete);
+                } else {
+                    System.err.println("Failed to delete image: " + imagePathToDelete);
+                }
+            } else {
+                System.err.println("Image not found: " + imagePathToDelete);
+            }
+        }
+    }
+
+    public void saveUpdateToCSV(Product product) {
+        String inputFile = "src/main/resources/catalog.txt";
+        StringBuilder updatedContent = new StringBuilder();
+        String productIdStr = String.valueOf(product.getId());
+
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+            boolean found = false;
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\|,\\|");  // Assuming "|,|" is the delimiter
+                if (parts.length > 0 && parts[0].equals(productIdStr)) {
+                    // Update the existing product entry
+                    line = String.join("|,|",
+                            productIdStr,
+                            product.getName(),
+                            product.getBrand(),
+                            product.getDescription(),
+                            product.getCategory(),
+                            product.getImage()
+                    );
+                    found = true;
+                }
+                updatedContent.append(line); // Append the line without adding a newline yet
+                updatedContent.append("\n");  // Add a newline after each line
+            }
+
+            if (!found) {
+                System.out.println("Product ID not found in catalog.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Overwrite the file with the updated content, trimming the trailing newline if necessary
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile))) {
+            // Remove the last newline (if it exists) before writing to the file
+            String updatedContentString = updatedContent.toString();
+            if (updatedContentString.endsWith("\n")) {
+                updatedContentString = updatedContentString.substring(0, updatedContentString.length() - 1);
+            }
+            writer.write(updatedContentString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public void saveProductsToCSV(Product product) {
         String productLine = String.join("|,|",
                 String.valueOf(product.getId()),  // Product ID
@@ -337,40 +425,12 @@ public class HomeController {
         }
 
         try {
-            // Define folder path (make sure it's a valid, writable directory)
-            String uploadDir = "uploads/";
+            String imagePath = saveImage(image);  // Use the new function
 
-            // Create folder if it doesn't exist
-            File directory = new File(uploadDir);
-            if (!directory.exists()) {
-                directory.mkdirs();  // Create the directory if it doesn't exist
-            }
-
-            // Handle image file naming (avoid collisions)
-            String imageName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-            String filePath = uploadDir + imageName;
-            File file = new File(filePath);
-
-            // Save the file using transferTo
-//            image.transferTo(file);
-
-            //  if transferTo doesn't work, you can use FileOutputStream like this:
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                byte[] bytes = image.getBytes();
-                fos.write(bytes);
-                fos.flush();
-            }
-
-            // Save the relative image path for web access
-            String imagePath = "/uploads/" + imageName;
-
-            // Add the new product (assuming you have a list or a repository)
-            int newId = products.size() + 1;  // Generating ID based on list size
+            int newId = products.size() + 1;
             Product newProduct = new Product(newId, name, brand, description, category, imagePath);
-            System.out.println(imagePath);
-            products.add(newProduct);  // Add product to the in-memory list
+            products.add(newProduct);
             saveProductsToCSV(newProduct);
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -382,7 +442,7 @@ public class HomeController {
     }
 
     @PostMapping("/delete-product")
-    public String deleteProduct(@RequestParam int id, HttpSession session) {
+    public String deleteProduct(@RequestParam int id, HttpSession session) throws IOException {
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
@@ -425,33 +485,21 @@ public class HomeController {
 
         // Delete the image file if it exists
         if (imagePathToDelete != null) {
-            imagePathToDelete = imagePathToDelete.substring(1);
+            deleteImage(imagePathToDelete);
 
-            File imageFile = new File(imagePathToDelete);
-            if (imageFile.exists() && imageFile.isFile()) {
-                if (imageFile.delete()) {
-                    System.out.println("Image deleted successfully: " + imagePathToDelete);
-                } else {
-                    System.err.println("Failed to delete image: " + imagePathToDelete);
-                }
-            } else {
-                System.err.println("Image not found: " + imagePathToDelete);
-            }
         }
 
         return "redirect:/admin";
     }
 
-    @PostMapping("/update-product")
-    public String updateProduct(@RequestParam int id, @RequestParam String name,
-                                @RequestParam String brand, @RequestParam String description,
-                                @RequestParam String category, @RequestParam String image, HttpSession session) {
+    @GetMapping("/update-product/{id}")
+    public String showUpdateProductPage(@PathVariable int id, Model model, HttpSession session) {
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
 
+        // Find product by ID
         Product foundProduct = null;
-
         for (Product product : products) {
             if (product.getId() == id) {
                 foundProduct = product;
@@ -459,12 +507,47 @@ public class HomeController {
             }
         }
 
-        if (foundProduct != null) {
-            foundProduct.setName(name);
-            foundProduct.setBrand(brand);
-            foundProduct.setDescription(description);
-            foundProduct.setCategory(category);
-            foundProduct.setImage(image);
+        // If product is not found, redirect back to admin
+        if (foundProduct == null) {
+            return "redirect:/admin";
+        }
+
+        model.addAttribute("product", foundProduct);
+        return "update-product"; // Renders update-product.html
+    }
+
+
+    @PostMapping("/update-product/{id}")
+    public String updateProduct(@PathVariable int id,
+                                @RequestParam String name,
+                                @RequestParam String brand,
+                                @RequestParam String description,
+                                @RequestParam String category,
+                                @RequestParam(required = false) MultipartFile image,
+                                HttpSession session) throws IOException {
+
+        if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
+            return "redirect:/login";
+        }
+
+        for (Product product : products) {
+            if (product.getId() == id) {
+                product.setName(name);
+                product.setBrand(brand);
+                product.setDescription(description);
+                product.setCategory(category);
+
+                if (image != null && !image.isEmpty()) {
+                    // Delete the old image
+                    deleteImage(product.getImage());  // Pass the current image path from the product
+                    String imagePath = saveImage(image);  // Save the new image and get the path
+                    product.setImage(imagePath);  // Update the product's image path
+                }
+                saveUpdateToCSV(product);
+
+
+                break;
+            }
         }
 
         return "redirect:/admin";

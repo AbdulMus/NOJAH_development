@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<header>
+    <a class="home" href="/">
+        <h1>Makeup & Beauty Inventory</h1>
+    </a>
+    <nav>
+        <span class="logged-in">Logged in: <span th:text="${username}"></span></span>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main>
+    <div class="update-container">
+        <h2>Update Product</h2>
+
+        <form th:action="@{/update-product/{id}(id=${product.id})}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" th:value="${product.id}">
+
+            <div class="form-container">
+                <!-- Form Left: Product Details -->
+                <div class="form-left">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="name" th:value="${product.name}" required>
+                    </div>
+
+                    <div>
+                        <label>Brand:</label>
+                        <input type="text" name="brand" th:value="${product.brand}" required>
+                    </div>
+
+                    <div>
+                        <label>Category:</label>
+                        <input type="text" name="category" th:value="${product.category}" required>
+                    </div>
+
+                    <div>
+                        <label>Description:</label>
+                        <textarea name="description" rows="3" th:text="${product.description}"></textarea>
+                    </div>
+
+                    <div>
+                        <button type="submit">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Form Right: Product Image -->
+                <div class="form-right">
+                    <div class="image-container">
+                        <div class="current-image-container">
+                            <label>Current Image:</label>
+                            <img th:src="@{${product.image}}" alt="Current Image" class="current-image">
+                        </div>
+                        <div class="new-image-container">
+                            <label>New Image (Optional):</label>
+                            <input type="file" name="image" accept=".png, .jpg" onchange="previewImage(event)">
+                            <img id="newImagePreview" class="new-image-preview" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <a href="/admin"><button>Cancel</button></a>
+    </div>
+</main>
+
+<footer>
+    <p>NOJAH Development Demo.</p>
+</footer>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('newImagePreview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+</body>
+</html>

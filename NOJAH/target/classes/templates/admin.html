@@ -85,7 +85,9 @@
           <td>
             <form method="post" th:action="@{/update-product}">
               <input type="hidden" name="id" th:value="${product.id}">
-              <button type="submit">Update</button>
+              <a th:href="@{/update-product/{id}(id=${product.id})}">
+                <button type="button">Update</button>
+                </a>
             </form>
           </td>
           <td>
