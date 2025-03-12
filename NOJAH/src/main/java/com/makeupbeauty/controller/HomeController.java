@@ -1,6 +1,8 @@
 package com.makeupbeauty.controller;
 
 import com.makeupbeauty.model.Product;
+import com.makeupbeauty.model.User;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,142 +15,111 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.*;
 import java.nio.file.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
 
     private final ArrayList<Product> products = new ArrayList<>();
-    private final HashMap<String, String> users = new HashMap<>(); // Mocked user credentials
-    private final Map<String, Set<Integer>> userFavorites = new HashMap<>(); //
+    private final HashMap<String, User> users = new HashMap<>(); // Store User objects
+    private final Map<String, Set<Integer>> userFavorites = new HashMap<>();
+    private final String userPath = "src/main/resources/users.csv";
+    private final String catalogPath = "src/main/resources/catalog.txt";
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class); // <------- this is better than printStackTrace()
-
-    // constructor init method
-    public void loadFavoritesFromCSV(String filePath) {
-        File favFile = new File(filePath);
-        if (!favFile.exists()) {
-            logger.warn("favorites.csv does not exist yet.");
-            return;
-        }
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-                String[] values = line.split(",");
-                if (values.length == 2) {
-                    String username = values[0].trim();
-                    int productId = Integer.parseInt(values[1].trim());
-
-                    // Add to the userFavorites map
-                    userFavorites.putIfAbsent(username, new HashSet<>());
-                    userFavorites.get(username).add(productId);
-                }
-            }
-            logger.info("Favorites successfully loaded from {}", filePath);
-        } catch (IOException e) {
-            logger.error("Failed to load favorites from {}: {}", filePath, e.getMessage(), e);
-        }
-    }
-
-    // method is run everytime you save
-    public void saveFavoriteToCSV(String username, int productId) {
-        String fav_line = username + "," + productId;
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/favorites.csv", true))) {
-            writer.newLine();
-            writer.write(fav_line);
-            logger.info("User '{}' favorited product {}", username, productId);
-        } catch (IOException e) {
-            logger.error("Failed to save favorite: {}", e.getMessage(), e);
-        }
-    }
 
     // constructor
     public HomeController() {
         loadProductsFromCSV("src/main/resources/catalog.txt");
         loadUsersFromCSV("src/main/resources/users.csv");
-        loadFavoritesFromCSV("src/main/resources/favorites.csv");
     }
 
+    private Product findProduct(int productId) {
+        Product foundProduct = null;
+
+        // Loop through each product in the products list
+        for (Product p : products) {
+            // Check if the current product's ID matches the productId
+            if (p.getId() == productId) {
+                // If a match is found, store the product and exit the loop
+                foundProduct = p;
+                break;
+            }
+        }
+
+        // After the loop, foundProduct will either contain the matching product or remain null
+        return foundProduct;
+    }
+
+    // Add a favorite product
     @PostMapping("/favorite")
     public String addFavorite(@RequestParam(required = false) Integer productId, HttpSession session) {
         if (productId == null) {
-            System.err.println("OOPS! ERROR: productId is null!");
+            logger.error("Product ID is null");
             return "redirect:/error?message=Product ID is missing";
         }
 
-        String username = (String) session.getAttribute("user");
-        if (username == null) {
+        User user = users.getOrDefault((((String) session.getAttribute("user")).toUpperCase()), null);
+
+        if (user == null) {
             return "redirect:/login";
         }
 
-        System.out.println("OK: User " + username + " favorited product: " + productId);
+        // Variable to store the found product
+        Product product = findProduct(productId);
 
-        userFavorites.putIfAbsent(username, new HashSet<>());
-        if (!userFavorites.get(username).contains(productId)) {
-            userFavorites.get(username).add(productId);
-            saveFavoriteToCSV(username, productId);
+        if (product == null) {
+            return "redirect:/error?message=Product not found";
         }
+
+        user.addFavorite(productId, products);
 
         return "redirect:/product/" + productId + "?success=Added to favorites";
     }
 
+    // Remove a favorite product
     @PostMapping("/unfavorite")
     public String removeFavorite(@RequestParam int productId, HttpSession session) {
         String username = (String) session.getAttribute("user");
+
         if (username == null) {
             return "redirect:/login";
         }
 
-        // Remove product from user's favorites
-        Set<Integer> favSet = userFavorites.getOrDefault(username, new HashSet<>());
-        if (favSet.contains(productId)) {
-            favSet.remove(productId);
-            rewriteFavoritesCSV("src/main/resources/favorites.csv");
+        User user = users.get(username.toUpperCase());
+        if (user == null) {
+            return "redirect:/login";
         }
+
+        // Variable to store the found product
+        Product product = findProduct(productId);
+
+        if (product == null) {
+            return "redirect:/error?message=Product not found";
+        }
+
+        user.removeFavorite(product);
 
         return "redirect:/my-favorites?success=Removed+from+favorites";
     }
 
-    private void rewriteFavoritesCSV(String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writer.write("username,productId"); // Keep the header
-            writer.newLine();
 
-            for (String user : userFavorites.keySet()) {
-                for (Integer pid : userFavorites.get(user)) {
-                    writer.write(user + "," + pid);
-                    writer.newLine();
-                }
-            }
-            logger.info("Favorites file successfully updated.");
-        } catch (IOException e) {
-            logger.error("Failed to update favorites.csv: {}", e.getMessage(), e);
-        }
-    }
-
-
-
+    // Show user's favorite products
     @GetMapping("/my-favorites")
     public String showFavorites(Model model, HttpSession session) {
-        String username = (String) session.getAttribute("user");
+        checkUser(model, session);
+        String username = model.getAttribute("username").toString();
+
         if (username == null) {
             return "redirect:/login";
         }
 
-        // Get the product IDs that the (current) user added to favs
-        Set<Integer> favIds = userFavorites.getOrDefault(username, new HashSet<>());
-
-        // Grab IDS of the product before turning them into the product objects of an ArrList
-        List<Product> favProducts = new ArrayList<>();
-        for (Product p : products) {
-            if (favIds.contains(p.getId())) {
-                favProducts.add(p);
-            }
+        User user = users.get(username.toUpperCase());
+        if (user == null) {
+            return "redirect:/login";
         }
 
-        model.addAttribute("favProducts", favProducts);
-        return "favorites"; // Loads the favorites.html endpoint thingy
+        model.addAttribute("favProducts", user.getFavorites());
+        return "favorites";
     }
 
 
@@ -160,8 +131,6 @@ public class HomeController {
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty()) continue; // skip empty lines
                 String[] values = line.split("\\|,\\|");
-
-                System.out.println("Reading line: " + line);
 
                 if (values.length == 6) {
                     int id = Integer.parseInt(values[0].trim());
@@ -289,21 +258,65 @@ public class HomeController {
 
     }
 
+    // Load users from CSV and create User objects
     public void loadUsersFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            br.readLine();
+            br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length == 2) {
+                if (values.length == 3) { // Now expecting 3 columns: username, password, favorites
                     String name = values[0].trim();
                     String password = values[1].trim();
-                    users.put(name, password);
+                    String favorites = values[2].trim();
+
+                    // An empty list to store favorite products
+                    ArrayList<Product> favProducts = new ArrayList<>();
+
+                    // Check if the favorites string is not empty
+                    if (!favorites.isEmpty()) {
+                        // Split the favorites string into individual product IDs
+                        String[] favoriteIds = favorites.split(";");
+
+                        // Loop through each product ID
+                        for (String favId : favoriteIds) {
+                            // Convert the product ID from String to int
+                            int productId = Integer.parseInt(favId.trim());
+
+                            // Step 6: Search for the product in the products list
+                            Product foundProduct = null;
+                            for (Product p : products) {
+                                if (p.getId() == productId) {
+                                    // If found, store the product
+                                    foundProduct = p;
+                                    // Exit the loop once the product is found
+                                    break;
+                                }
+                            }
+
+                            // Step 8: If the product was found, add it to the favProducts list
+                            if (foundProduct != null) {
+                                favProducts.add(foundProduct);
+                            }
+                        }
+                    }
+
+                    User user = new User(name, password, favProducts, null); // Cart is null for now
+                    users.put(name, user);
+                    System.out.println(user);
+
+                    // Load favorites into userFavorites map
+                    Set<Integer> favSet = new HashSet<>();
+                    // Loop through each product in the favProducts list
+                    for (Product product : favProducts) {
+                        // Add the product ID to the Set
+                        favSet.add(product.getId());
+                    }
+                    userFavorites.put(name, favSet);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading CSV file: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error reading CSV file: {}", e.getMessage(), e);
         }
     }
 
@@ -366,6 +379,7 @@ public class HomeController {
         return "login";
     }
 
+    // Handle login
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
         if (username.equals("admin") && password.equals("123")) {
@@ -373,11 +387,15 @@ public class HomeController {
             return "redirect:/";
         }
 
-        for (String user : users.keySet()) {
-            if (user.equalsIgnoreCase(username) && users.get(user).equals(password)) {
-                session.setAttribute("user", username);
-                return "redirect:/";
+        User user = users.get(username.toUpperCase());
+        if (user != null && user.getPassword().equals(password)) {
+            session.setAttribute("user", username);
+
+            if (!userFavorites.containsKey(username)) {
+                userFavorites.put(username, new HashSet<>());
             }
+
+            return "redirect:/";
         }
 
         model.addAttribute("error", "Invalid username or password.");
