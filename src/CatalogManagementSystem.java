@@ -1,17 +1,56 @@
-package src;
-
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class CatalogManagementSystem {
     private final static String DATABASE_FILE = Paths.get("").toAbsolutePath() + "/src/catalog.csv";
+    private final static String LOGIN_FILE = Paths.get("").toAbsolutePath() + "/src/login.csv";
     private static final List<Item> catalog = new ArrayList<>();
+    private static final Map<String, String> loginCredentials = new HashMap<>();
 
     public static void main(String[] ignoredArgs) {
+        loadLoginData();
         loadCatalog();
         Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n1. Log In");
+            System.out.println("2. Create Account");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = getIntInput(scanner);
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> {
+                    if (loginUser(scanner)) {
+                        showMainMenu(scanner);
+                    }
+                }
+                case 2 -> createAccount(scanner);
+                case 3 -> {
+                    saveCatalog();
+                    System.exit(0);
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void showMainMenu(Scanner scanner) {
         boolean running = true;
 
         while (running) {
@@ -42,7 +81,6 @@ public class CatalogManagementSystem {
                 default -> System.out.println("Invalid choice. Please try again.");
             }
         }
-        scanner.close();
     }
 
     private static int getIntInput(Scanner scanner) {
@@ -56,20 +94,100 @@ public class CatalogManagementSystem {
         }
     }
 
-    private static void loadCatalog() {
-        System.out.println("Attempting to load catalog from: " + DATABASE_FILE);
-        
+    // --------------- Login System ---------------
+    private static void loadLoginData() {
         try {
-            // Create parent directories if they don't exist
+            Path path = Path.of(LOGIN_FILE);
+            if (!Files.exists(path.getParent())) {
+                Files.createDirectories(path.getParent());
+            }
+
+            if (!Files.exists(path)) {
+                Files.createFile(path);
+            }
+
+            try (BufferedReader br = new BufferedReader(new FileReader(LOGIN_FILE))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    List<String> parts = parseCsvLine(line);
+                    if (parts.size() >= 2) {
+                        loginCredentials.put(parts.get(0), parts.get(1));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading login data: " + e.getMessage());
+        }
+    }
+
+    private static void createAccount(Scanner scanner) {
+        System.out.print("Enter new username: ");
+        String username = scanner.nextLine().trim();
+
+        if (loginCredentials.containsKey(username)) {
+            System.out.println("Username already exists!");
+            return;
+        }
+
+        String password;
+        while (true) {
+            System.out.print("Enter new password: ");
+            password = scanner.nextLine().trim();
+            
+            if (isValidPassword(password)) break;
+            System.out.println("Password must contain:\n- 8+ characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character");
+        }
+
+        loginCredentials.put(username, password);
+        saveLoginData();
+        System.out.println("Account created successfully!");
+    }
+
+    private static boolean isValidPassword(String password) {
+        return password.length() >= 8 &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*\\d.*") &&
+                password.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
+    }
+
+    private static boolean loginUser(Scanner scanner) {
+        System.out.print("Username: ");
+        String username = scanner.nextLine().trim();
+        System.out.print("Password: ");
+        String password = scanner.nextLine().trim();
+
+        if (loginCredentials.containsKey(username) && 
+            loginCredentials.get(username).equals(password)) {
+            System.out.println("Login successful!");
+            return true;
+        }
+        System.out.println("Invalid credentials!");
+        return false;
+    }
+
+    private static void saveLoginData() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(LOGIN_FILE))) {
+            for (Map.Entry<String, String> entry : loginCredentials.entrySet()) {
+                bw.write(escapeCsvField(entry.getKey()) + "," + escapeCsvField(entry.getValue()));
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving login data: " + e.getMessage());
+        }
+    }
+
+    // --------------- Catalog System ---------------
+    private static void loadCatalog() {
+        try {
             Path path = Path.of(DATABASE_FILE);
             if (!Files.exists(path.getParent())) {
                 Files.createDirectories(path.getParent());
             }
 
-            // Create file if it doesn't exist
             if (!Files.exists(path)) {
                 Files.createFile(path);
-                System.out.println("Created new catalog file");
+                return;
             }
 
             try (BufferedReader br = new BufferedReader(new FileReader(DATABASE_FILE))) {
@@ -87,11 +205,9 @@ public class CatalogManagementSystem {
                         ));
                     }
                 }
-                System.out.println("Successfully loaded " + catalog.size() + " items");
             }
         } catch (IOException e) {
             System.out.println("Error loading catalog: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -121,44 +237,42 @@ public class CatalogManagementSystem {
     }
 
     private static void saveCatalog() {
-        System.out.println("Saving catalog to: " + DATABASE_FILE);
-        
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATABASE_FILE))) {
-            // Write header
-            bw.write(escapeCsvField("ID") + "," +
-                    escapeCsvField("Name") + "," +
-                    escapeCsvField("Description") + "," +
-                    escapeCsvField("Category") + "," +
-                    escapeCsvField("Brand"));
+            bw.write(String.join(",",
+                escapeCsvField("ID"),
+                escapeCsvField("Name"),
+                escapeCsvField("Description"),
+                escapeCsvField("Category"),
+                escapeCsvField("Brand")
+            ));
             bw.newLine();
 
-            // Write items
             for (Item item : catalog) {
-                String line = String.join(",",
-                        escapeCsvField(item.getId()),
-                        escapeCsvField(item.getName()),
-                        escapeCsvField(item.getDescription()),
-                        escapeCsvField(item.getCategory()),
-                        escapeCsvField(item.getBrand()));
-                bw.write(line);
+                bw.write(String.join(",",
+                    escapeCsvField(item.getId()),
+                    escapeCsvField(item.getName()),
+                    escapeCsvField(item.getDescription()),
+                    escapeCsvField(item.getCategory()),
+                    escapeCsvField(item.getBrand())
+                ));
                 bw.newLine();
             }
-            System.out.println("Successfully saved " + catalog.size() + " items");
         } catch (IOException e) {
             System.out.println("Error saving catalog: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     private static String escapeCsvField(String field) {
-        if (field == null || field.isEmpty()) return "\"\"";
-        String escaped = field.replace("\"", "\"\"");
-        return "\"" + escaped + "\"";
+        if (field.contains(",") || field.contains("\"") || field.contains("\n")) {
+            return "\"" + field.replace("\"", "\"\"") + "\"";
+        }
+        return field;
     }
 
+    // --------------- Catalog Operations ---------------
     private static void viewItems() {
         if (catalog.isEmpty()) {
-            System.out.println("No items found in the catalog.");
+            System.out.println("No items found.");
             return;
         }
         catalog.forEach(System.out::println);
@@ -168,17 +282,13 @@ public class CatalogManagementSystem {
         System.out.print("Enter item ID: ");
         String id = scanner.nextLine().trim();
         
-        // Validate numeric ID
-        try {
-            Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            System.out.println("Error: ID must be a number. Item not added.");
+        if (!id.matches("\\d+")) {
+            System.out.println("Invalid ID! Must be numeric.");
             return;
         }
         
-        // Check for duplicate ID
         if (findItemById(id) != null) {
-            System.out.println("Error: An item with this ID already exists.");
+            System.out.println("Item ID already exists!");
             return;
         }
 
@@ -191,9 +301,8 @@ public class CatalogManagementSystem {
         System.out.print("Enter brand: ");
         String brand = scanner.nextLine().trim();
 
-        // Validate all fields
         if (name.isEmpty() || description.isEmpty() || category.isEmpty() || brand.isEmpty()) {
-            System.out.println("Error: All fields are required. Item not added.");
+            System.out.println("All fields are required!");
             return;
         }
 
@@ -205,27 +314,26 @@ public class CatalogManagementSystem {
         System.out.print("Enter item ID to edit: ");
         String id = scanner.nextLine().trim();
         Item item = findItemById(id);
+        
         if (item == null) {
-            System.out.println("Error: Item not found.");
+            System.out.println("Item not found.");
             return;
         }
 
-        System.out.print("Enter new name (leave blank to keep current: " + item.getName() + "): ");
+        System.out.print("New name (" + item.getName() + "): ");
         String name = scanner.nextLine().trim();
-        if (!name.isEmpty()) item.setName(name);
-
-        System.out.print("Enter new description (leave blank to keep current: " + item.getDescription() + "): ");
+        System.out.print("New description (" + item.getDescription() + "): ");
         String description = scanner.nextLine().trim();
-        if (!description.isEmpty()) item.setDescription(description);
-
-        System.out.print("Enter new category (leave blank to keep current: " + item.getCategory() + "): ");
+        System.out.print("New category (" + item.getCategory() + "): ");
         String category = scanner.nextLine().trim();
-        if (!category.isEmpty()) item.setCategory(category);
-
-        System.out.print("Enter new brand (leave blank to keep current: " + item.getBrand() + "): ");
+        System.out.print("New brand (" + item.getBrand() + "): ");
         String brand = scanner.nextLine().trim();
-        if (!brand.isEmpty()) item.setBrand(brand);
 
+        if (!name.isEmpty()) item.setName(name);
+        if (!description.isEmpty()) item.setDescription(description);
+        if (!category.isEmpty()) item.setCategory(category);
+        if (!brand.isEmpty()) item.setBrand(brand);
+        
         System.out.println("Item updated successfully.");
     }
 
@@ -233,32 +341,31 @@ public class CatalogManagementSystem {
         System.out.print("Enter item ID to delete: ");
         String id = scanner.nextLine().trim();
         Item item = findItemById(id);
+        
         if (item == null) {
-            System.out.println("Error: Item not found.");
+            System.out.println("Item not found.");
             return;
         }
 
-        System.out.print("Are you sure you want to delete this item? (yes/no): ");
-        String confirmation = scanner.nextLine().trim();
-        if (confirmation.equalsIgnoreCase("yes")) {
+        System.out.print("Confirm deletion (y/n)? ");
+        if (scanner.nextLine().equalsIgnoreCase("y")) {
             catalog.remove(item);
-            System.out.println("Item deleted successfully.");
+            System.out.println("Item deleted.");
         } else {
             System.out.println("Deletion canceled.");
         }
     }
 
     private static void searchItems(Scanner scanner) {
-        System.out.print("Enter search keyword: ");
+        System.out.print("Search keyword: ");
         String keyword = scanner.nextLine().trim().toLowerCase();
+        
         List<Item> results = catalog.stream()
-                .filter(item -> item.getName().toLowerCase().contains(keyword) ||
-                        item.getDescription().toLowerCase().contains(keyword) ||
-                        item.getCategory().toLowerCase().contains(keyword) ||
-                        item.getBrand().toLowerCase().contains(keyword))
-                .toList();
+            .filter(item -> item.toString().toLowerCase().contains(keyword))
+            .collect(Collectors.toList());
+        
         if (results.isEmpty()) {
-            System.out.println("No items found matching the keyword.");
+            System.out.println("No matching items found.");
         } else {
             results.forEach(System.out::println);
         }
@@ -268,28 +375,21 @@ public class CatalogManagementSystem {
         System.out.println("Filter by:\n1. Category\n2. Brand");
         int choice = getIntInput(scanner);
         scanner.nextLine();
-
-        switch (choice) {
-            case 1 -> {
-                System.out.print("Enter category: ");
-                String category = scanner.nextLine().trim();
-                filterBy(category, "category");
-            }
-            case 2 -> {
-                System.out.print("Enter brand: ");
-                String brand = scanner.nextLine().trim();
-                filterBy(brand, "brand");
-            }
-            default -> System.out.println("Invalid choice.");
+        
+        if (choice < 1 || choice > 2) {
+            System.out.println("Invalid choice!");
+            return;
         }
-    }
 
-    private static void filterBy(String value, String type) {
+        System.out.print("Enter filter value: ");
+        String filter = scanner.nextLine().trim().toLowerCase();
+        
         List<Item> results = catalog.stream()
-                .filter(item -> (type.equals("category") 
-                        ? item.getCategory().equalsIgnoreCase(value) 
-                        : item.getBrand().equalsIgnoreCase(value)))
-                .collect(Collectors.toList());
+            .filter(item -> (choice == 1 ? 
+                item.getCategory().toLowerCase() : 
+                item.getBrand().toLowerCase()).equals(filter))
+            .collect(Collectors.toList());
+        
         if (results.isEmpty()) {
             System.out.println("No items found.");
         } else {
@@ -299,9 +399,9 @@ public class CatalogManagementSystem {
 
     private static Item findItemById(String id) {
         return catalog.stream()
-                .filter(item -> item.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+            .filter(item -> item.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 
     static class Item {
@@ -319,21 +419,21 @@ public class CatalogManagementSystem {
             this.brand = brand;
         }
 
+        // Getters and Setters
         public String getId() { return id; }
         public String getName() { return name; }
-        public String getDescription() { return description; }
-        public String getCategory() { return category; }
-        public String getBrand() { return brand; }
-
         public void setName(String name) { this.name = name; }
+        public String getDescription() { return description; }
         public void setDescription(String description) { this.description = description; }
+        public String getCategory() { return category; }
         public void setCategory(String category) { this.category = category; }
+        public String getBrand() { return brand; }
         public void setBrand(String brand) { this.brand = brand; }
 
         @Override
         public String toString() {
-            return String.format("ID: %s, Name: %s, Description: %s, Category: %s, Brand: %s",
-                    id, name, description, category, brand);
+            return String.format("ID: %s | Name: %s | Description: %s | Category: %s | Brand: %s",
+                id, name, description, category, brand);
         }
     }
 }
