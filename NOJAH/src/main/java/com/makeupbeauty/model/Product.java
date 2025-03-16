@@ -1,5 +1,7 @@
 package com.makeupbeauty.model;
 
+import java.io.*;
+
 public class Product {
     private Integer id;
     private String name;
@@ -7,6 +9,7 @@ public class Product {
     private String description;
     private String image;
     private String category;
+    private final String catalogPath = "src/main/resources/catalog.txt";
 
     // Constructor
     public Product(Integer id, String name, String brand, String description,String category, String image) {
@@ -66,4 +69,80 @@ public class Product {
         this.image = image;
     }
 
+    public void saveProductsToCSV() {
+        String productLine = String.join("|,|",
+                String.valueOf(this.getId()),  // Product ID
+                this.getName(),                // Product name
+                this.getBrand(),               // Product brand
+                this.getDescription(),         // Product description
+                this.getCategory(),            // Product category
+                this.getImage()                // Product image
+        );
+        // Append the new product to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(catalogPath, true))) {
+            writer.newLine(); // Add a newline before appending the product
+            writer.write(productLine);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveUpdateToCSV() {
+        StringBuilder updatedContent = new StringBuilder();
+        String productIdStr = String.valueOf(this.getId());
+
+        try (BufferedReader br = new BufferedReader(new FileReader(catalogPath))) {
+            String line;
+            boolean found = false;
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\|,\\|");  // Assuming "|,|" is the delimiter
+                if (parts.length > 0 && parts[0].equals(productIdStr)) {
+                    // Update the existing product entry
+                    line = String.join("|,|",
+                            productIdStr,
+                            this.getName(),
+                            this.getBrand(),
+                            this.getDescription(),
+                            this.getCategory(),
+                            this.getImage()
+                    );
+                    found = true;
+                }
+                updatedContent.append(line); // Append the line without adding a newline yet
+                updatedContent.append("\n");  // Add a newline after each line
+            }
+
+            if (!found) {
+                System.out.println("Product ID not found in catalog.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Overwrite the file with the updated content, trimming the trailing newline if necessary
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(catalogPath))) {
+            // Remove the last newline (if it exists) before writing to the file
+            String updatedContentString = updatedContent.toString();
+            if (updatedContentString.endsWith("\n")) {
+                updatedContentString = updatedContentString.substring(0, updatedContentString.length() - 1);
+            }
+            writer.write(updatedContentString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

@@ -168,6 +168,6 @@ footer {
     background-color: #d10060;
     color: white;
     font-size: 14px;
-    width: 100%;
+    max-width: 100%;
     margin-top: 20px;
 }

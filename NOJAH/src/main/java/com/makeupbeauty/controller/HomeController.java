@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.*;
 import java.nio.file.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
@@ -23,8 +22,6 @@ public class HomeController {
     private final ArrayList<Product> products = new ArrayList<>();
     private final HashMap<String, User> users = new HashMap<>(); // Store User objects
     private final Map<String, Set<Integer>> userFavorites = new HashMap<>();
-    private final String userPath = "src/main/resources/users.csv";
-    private final String catalogPath = "src/main/resources/catalog.txt";
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class); // <------- this is better than printStackTrace()
 
     // constructor
@@ -48,6 +45,76 @@ public class HomeController {
 
         // After the loop, foundProduct will either contain the matching product or remain null
         return foundProduct;
+    }
+
+    // USERS -----------------------------------------------------------------------------------------------------------
+
+    public void checkUser(Model model, HttpSession session) {
+        if (session.getAttribute("user") != null) {
+            model.addAttribute("isLoggedIn", session.getAttribute("user") != null);
+            model.addAttribute("username", session.getAttribute("user"));
+        }
+        model.addAttribute("isAdmin", "admin".equals(session.getAttribute("user")));
+    }
+
+    public void loadUsersFromCSV(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            br.readLine(); // skip header
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length == 3) { // Now expecting 3 columns: username, password, favorites
+                    String name = values[0].trim();
+                    String password = values[1].trim();
+                    String favorites = values[2].trim();
+
+                    // An empty list to store favorite products
+                    ArrayList<Product> favProducts = new ArrayList<>();
+
+                    // Check if the favorites string is not empty
+                    if (!favorites.isEmpty()) {
+                        // Split the favorites string into individual product IDs
+                        String[] favoriteIds = favorites.split(";");
+
+                        // Loop through each product ID
+                        for (String favId : favoriteIds) {
+                            // Convert the product ID from String to int
+                            int productId = Integer.parseInt(favId.trim());
+
+                            // Step 6: Search for the product in the products list
+                            Product foundProduct = null;
+                            for (Product p : products) {
+                                if (p.getId() == productId) {
+                                    // If found, store the product
+                                    foundProduct = p;
+                                    // Exit the loop once the product is found
+                                    break;
+                                }
+                            }
+
+                            // Step 8: If the product was found, add it to the favProducts list
+                            if (foundProduct != null) {
+                                favProducts.add(foundProduct);
+                            }
+                        }
+                    }
+
+                    User user = new User(name, password, favProducts); // Cart is null for now
+                    users.put(name, user);
+
+                    // Load favorites into userFavorites map
+                    Set<Integer> favSet = new HashSet<>();
+                    // Loop through each product in the favProducts list
+                    for (Product product : favProducts) {
+                        // Add the product ID to the Set
+                        favSet.add(product.getId());
+                    }
+                    userFavorites.put(name, favSet);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error reading CSV file: {}", e.getMessage(), e);
+        }
     }
 
     // Add a favorite product
@@ -122,6 +189,7 @@ public class HomeController {
         return "favorites";
     }
 
+    // PRODUCTS --------------------------------------------------------------------------------------------------------
 
     public void loadProductsFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -189,235 +257,6 @@ public class HomeController {
         }
     }
 
-    public void saveUpdateToCSV(Product product) {
-        String inputFile = "src/main/resources/catalog.txt";
-        StringBuilder updatedContent = new StringBuilder();
-        String productIdStr = String.valueOf(product.getId());
-
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
-            String line;
-            boolean found = false;
-
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\|,\\|");  // Assuming "|,|" is the delimiter
-                if (parts.length > 0 && parts[0].equals(productIdStr)) {
-                    // Update the existing product entry
-                    line = String.join("|,|",
-                            productIdStr,
-                            product.getName(),
-                            product.getBrand(),
-                            product.getDescription(),
-                            product.getCategory(),
-                            product.getImage()
-                    );
-                    found = true;
-                }
-                updatedContent.append(line); // Append the line without adding a newline yet
-                updatedContent.append("\n");  // Add a newline after each line
-            }
-
-            if (!found) {
-                System.out.println("Product ID not found in catalog.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        // Overwrite the file with the updated content, trimming the trailing newline if necessary
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile))) {
-            // Remove the last newline (if it exists) before writing to the file
-            String updatedContentString = updatedContent.toString();
-            if (updatedContentString.endsWith("\n")) {
-                updatedContentString = updatedContentString.substring(0, updatedContentString.length() - 1);
-            }
-            writer.write(updatedContentString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void saveProductsToCSV(Product product) {
-        String productLine = String.join("|,|",
-                String.valueOf(product.getId()),  // Product ID
-                product.getName(),                // Product name
-                product.getBrand(),               // Product brand
-                product.getDescription(),         // Product description
-                product.getCategory(),            // Product category
-                product.getImage()                // Product image
-        );
-        // Append the new product to the CSV file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/catalog.txt", true))) {
-            writer.newLine(); // Add a newline before appending the product
-            writer.write(productLine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    // Load users from CSV and create User objects
-    public void loadUsersFromCSV(String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                if (values.length == 3) { // Now expecting 3 columns: username, password, favorites
-                    String name = values[0].trim();
-                    String password = values[1].trim();
-                    String favorites = values[2].trim();
-
-                    // An empty list to store favorite products
-                    ArrayList<Product> favProducts = new ArrayList<>();
-
-                    // Check if the favorites string is not empty
-                    if (!favorites.isEmpty()) {
-                        // Split the favorites string into individual product IDs
-                        String[] favoriteIds = favorites.split(";");
-
-                        // Loop through each product ID
-                        for (String favId : favoriteIds) {
-                            // Convert the product ID from String to int
-                            int productId = Integer.parseInt(favId.trim());
-
-                            // Step 6: Search for the product in the products list
-                            Product foundProduct = null;
-                            for (Product p : products) {
-                                if (p.getId() == productId) {
-                                    // If found, store the product
-                                    foundProduct = p;
-                                    // Exit the loop once the product is found
-                                    break;
-                                }
-                            }
-
-                            // Step 8: If the product was found, add it to the favProducts list
-                            if (foundProduct != null) {
-                                favProducts.add(foundProduct);
-                            }
-                        }
-                    }
-
-                    User user = new User(name, password, favProducts, null); // Cart is null for now
-                    users.put(name, user);
-                    System.out.println(user);
-
-                    // Load favorites into userFavorites map
-                    Set<Integer> favSet = new HashSet<>();
-                    // Loop through each product in the favProducts list
-                    for (Product product : favProducts) {
-                        // Add the product ID to the Set
-                        favSet.add(product.getId());
-                    }
-                    userFavorites.put(name, favSet);
-                }
-            }
-        } catch (IOException e) {
-            logger.error("Error reading CSV file: {}", e.getMessage(), e);
-        }
-    }
-
-    public void checkUser(Model model, HttpSession session) {
-        if (session.getAttribute("user") != null) {
-            model.addAttribute("isLoggedIn", session.getAttribute("user") != null);
-            model.addAttribute("username", session.getAttribute("user"));
-        }
-        model.addAttribute("isAdmin", "admin".equals(session.getAttribute("user")));
-    }
-
-    @GetMapping("/")
-    public String home(Model model, HttpSession session) {
-        model.addAttribute("products", products);
-        checkUser(model, session);
-        return "index";
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam String query,
-                         @RequestParam(required = false) String category,
-                         @RequestParam(required = false) String brand,
-                         @RequestParam(required = false) String reset,  // Added to handle reset button
-                         Model model, HttpSession session) {
-
-        query = query.toLowerCase();
-        ArrayList<Product> searchResults = new ArrayList<>();
-        Set<String> filteredCategories = new HashSet<>();
-        Set<String> filteredBrands = new HashSet<>();
-
-        for (Product product : products) {
-            boolean matchesQuery = product.getName().toLowerCase().contains(query) ||
-                    product.getBrand().toLowerCase().contains(query) ||
-                    product.getDescription().toLowerCase().contains(query) ||
-                    product.getCategory().toLowerCase().contains(query);
-
-            boolean matchesCategory = (category == null || category.isEmpty()) || product.getCategory().equalsIgnoreCase(category);
-            boolean matchesBrand = (brand == null || brand.isEmpty()) || product.getBrand().equalsIgnoreCase(brand);
-
-            if (matchesQuery && matchesCategory && matchesBrand) {
-                searchResults.add(product);
-                filteredCategories.add(product.getCategory());
-                filteredBrands.add(product.getBrand());
-            }
-        }
-
-        checkUser(model, session);
-        model.addAttribute("searchResults", searchResults);
-        model.addAttribute("query", query);
-        model.addAttribute("categories", filteredCategories);
-        model.addAttribute("brands", filteredBrands);
-        model.addAttribute("selectedCategory", category);
-        model.addAttribute("selectedBrand", brand);
-
-        return "search-results";
-    }
-
-    @GetMapping("/login")
-    public String loginForm() {
-        return "login";
-    }
-
-    // Handle login
-    @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-        if (username.equals("admin") && password.equals("123")) {
-            session.setAttribute("user", username);
-            return "redirect:/";
-        }
-
-        User user = users.get(username.toUpperCase());
-        if (user != null && user.getPassword().equals(password)) {
-            session.setAttribute("user", username);
-
-            if (!userFavorites.containsKey(username)) {
-                userFavorites.put(username, new HashSet<>());
-            }
-
-            return "redirect:/";
-        }
-
-        model.addAttribute("error", "Invalid username or password.");
-        return "login";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
-    }
-
-    @GetMapping("/admin")
-    public String adminPage(Model model, HttpSession session) {
-        if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
-            return "redirect:/login";
-        }
-        checkUser(model, session);
-        model.addAttribute("products", products);
-        return "admin";
-    }
-
     @PostMapping("/add-product")
     public String addProduct(
             @RequestParam String name,
@@ -448,7 +287,7 @@ public class HomeController {
             int newId = products.size() + 1;
             Product newProduct = new Product(newId, name, brand, description, category, imagePath);
             products.add(newProduct);
-            saveProductsToCSV(newProduct);
+            newProduct.saveProductsToCSV();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -561,32 +400,13 @@ public class HomeController {
                     String imagePath = saveImage(image);  // Save the new image and get the path
                     product.setImage(imagePath);  // Update the product's image path
                 }
-                saveUpdateToCSV(product);
-
-
+                product.saveUpdateToCSV();
                 break;
             }
         }
 
         return "redirect:/admin";
     }
-
-    @RestController
-    public class FileController {
-        private static final String UPLOAD_DIR = "uploads/";
-
-        @GetMapping("/uploads/{filename:.+}")
-        @ResponseBody
-        public Resource serveFile(@PathVariable String filename) {
-            try {
-                Path filePath = Paths.get(UPLOAD_DIR).resolve(filename).normalize();
-                return new UrlResource(filePath.toUri());
-            } catch (Exception e) {
-                throw new RuntimeException("File not found: " + filename);
-            }
-        }
-    }
-
 
     @GetMapping("/product/{id}")
     public String product(@PathVariable int id, Model model, HttpSession session) {
@@ -607,27 +427,155 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/product1")
-    public String product1(Model model, HttpSession session) {
-        checkUser(model, session);
-        return "product1";
+    // LOGIN/LOGOUT/CREATE ACCOUNT -------------------------------------------------------------------------------------
+
+    @GetMapping("/login")
+    public String loginForm() {
+        return "login";
     }
 
-    @GetMapping("/product2")
-    public String product2(Model model, HttpSession session) {
-        checkUser(model, session);
-        return "product2";
+    // Handle login
+    @PostMapping("/login")
+    public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
+        if (username.equals("admin") && password.equals("123")) {
+            session.setAttribute("user", username);
+            return "redirect:/";
+        }
+
+        User user = users.get(username.toUpperCase());
+        if (user != null && user.getPassword().equals(password)) {
+            session.setAttribute("user", username);
+
+            if (!userFavorites.containsKey(username)) {
+                userFavorites.put(username, new HashSet<>());
+            }
+
+            return "redirect:/";
+        }
+
+        model.addAttribute("error", "Invalid username or password.");
+        return "login";
     }
 
-    @GetMapping("/product3")
-    public String product3(Model model, HttpSession session) {
-        checkUser(model, session);
-        return "product3";
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 
-    @GetMapping("/product4")
-    public String product4(Model model, HttpSession session) {
+    @GetMapping("/create-account")
+    public String createAccountForm() {
+        return "create-account";
+    }
+
+    @PostMapping("/create-account")
+    public String createAccount(@RequestParam String username, @RequestParam String password, @RequestParam String confirmPassword,
+                                Model model) {
+
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            model.addAttribute("error", "Username and password are required.");
+            return "create-account";
+        }
+
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("error", "Passwords do not match.");
+            return "create-account";
+        }
+
+        // Check if the username already exists
+        if (users.containsKey(username.toUpperCase())) {
+            model.addAttribute("error", "Username already exists.");
+            return "create-account";
+        }
+
+        // Create a new user
+        User newUser = new User(username, password, new ArrayList<>());
+        users.put(username.toUpperCase(), newUser);
+
+        // Save the new user to the CSV file
+        newUser.saveUserToCSV();
+
+        // Redirect to the login page with a success message
+        return "redirect:/login?success=Account+created+successfully";
+    }
+
+    // REST CONTROLLER -------------------------------------------------------------------------------------------------
+
+    @RestController
+    public class FileController {
+        private static final String UPLOAD_DIR = "uploads/";
+
+        @GetMapping("/uploads/{filename:.+}")
+        @ResponseBody
+        public Resource serveFile(@PathVariable String filename) {
+            try {
+                Path filePath = Paths.get(UPLOAD_DIR).resolve(filename).normalize();
+                return new UrlResource(filePath.toUri());
+            } catch (Exception e) {
+                throw new RuntimeException("File not found: " + filename);
+            }
+        }
+    }
+
+    // HOME PAGE -------------------------------------------------------------------------------------------------------
+
+    @GetMapping("/")
+    public String home(Model model, HttpSession session) {
+        model.addAttribute("products", products);
         checkUser(model, session);
-        return "product4";
+        return "index";
+    }
+
+    // SEARCH PAGE -----------------------------------------------------------------------------------------------------
+
+    @GetMapping("/search")
+    public String search(@RequestParam String query,
+                         @RequestParam(required = false) String category,
+                         @RequestParam(required = false) String brand,
+                         @RequestParam(required = false) String reset,  // Added to handle reset button
+                         Model model, HttpSession session) {
+
+        query = query.toLowerCase();
+        ArrayList<Product> searchResults = new ArrayList<>();
+        Set<String> filteredCategories = new HashSet<>();
+        Set<String> filteredBrands = new HashSet<>();
+
+        for (Product product : products) {
+            boolean matchesQuery = product.getName().toLowerCase().contains(query) ||
+                    product.getBrand().toLowerCase().contains(query) ||
+                    product.getDescription().toLowerCase().contains(query) ||
+                    product.getCategory().toLowerCase().contains(query);
+
+            boolean matchesCategory = (category == null || category.isEmpty()) || product.getCategory().equalsIgnoreCase(category);
+            boolean matchesBrand = (brand == null || brand.isEmpty()) || product.getBrand().equalsIgnoreCase(brand);
+
+            if (matchesQuery && matchesCategory && matchesBrand) {
+                searchResults.add(product);
+                filteredCategories.add(product.getCategory());
+                filteredBrands.add(product.getBrand());
+            }
+        }
+
+        checkUser(model, session);
+        model.addAttribute("searchResults", searchResults);
+        model.addAttribute("query", query);
+        model.addAttribute("categories", filteredCategories);
+        model.addAttribute("brands", filteredBrands);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("selectedBrand", brand);
+
+        return "search-results";
+    }
+
+    // ADMIN PAGE ------------------------------------------------------------------------------------------------------
+
+    @GetMapping("/admin")
+    public String adminPage(Model model, HttpSession session) {
+        if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
+            return "redirect:/login";
+        }
+        checkUser(model, session);
+        model.addAttribute("products", products);
+        return "admin";
     }
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Account</title>
+    <link rel="stylesheet" th:href="@{/css/create-account.css}">
+</head>
+<body>
+<main>
+    <h1>Create Account</h1>
+    <form method="post" th:action="@{/create-account}">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+        <button type="submit">Create Account</button>
+    </form>
+    <p th:if="${error}" th:text="${error}" class="error-message"></p>
+    <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+</main>
+<footer>
+    <p>NOJAH Development Demo.</p>
+</footer>
+</body>
+</html>

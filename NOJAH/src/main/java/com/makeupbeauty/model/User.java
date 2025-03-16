@@ -2,23 +2,18 @@ package com.makeupbeauty.model;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class User {
     private String name;
     private String password;
     private ArrayList<Product> favorites;
-    private ArrayList<Product> cart;
-
+    private final String userPath = "src/main/resources/users.csv";
     // Constructor
-    public User(String name, String password, ArrayList<Product> favorites, ArrayList<Product> cart) {
+    public User(String name, String password, ArrayList<Product> favorites) {
         this.name = name;
         this.password = password;
         this.favorites = favorites;
-        this.cart = cart;
     }
 
     public String getName(){ return this.name; }
@@ -30,15 +25,6 @@ public class User {
     public ArrayList<Product> getFavorites() { return this.favorites; }
     public void setFavorites(ArrayList<Product> favorites) { this.favorites = favorites; }
 
-    public ArrayList<Product> getCart() { return this.cart; }
-    public void setCart(ArrayList<Product> cart) { this.cart = cart; }
-
-    public void addCart(Product product) {
-        this.cart.add(product);
-    }
-    public void removeCart(Product product) {
-        this.cart.remove(product);
-    }
 
     @Override
     public String toString() {
@@ -46,15 +32,20 @@ public class User {
         for (Product product : this.favorites) {
             x.append("\n").append(product.toString());
         }
-        x.append("\nCart: ");
-        if (this.cart != null) {
-            for (Product product : this.cart) {
-                x.append("\n").append(product.toString());
-            }
-        } else {
-            x.append("null");
-        }
+
         return x.toString();
+    }
+
+    public void saveUserToCSV() {
+        String userLine = String.join(",", this.getName(), this.getPassword(), "");
+
+        // Append the new user to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userPath, true))) {
+            writer.newLine(); // Add a newline before appending the user
+            writer.write(userLine);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addFavorite(int productId, ArrayList<Product> products) {
@@ -94,7 +85,7 @@ public class User {
     private void printFavorites() {
         List<String> lines = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/users.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(userPath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 lines.add(line);
@@ -104,7 +95,7 @@ public class User {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/users.csv"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userPath))) {
             writer.write("username,password,favorites"); // Write header
             writer.newLine();
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Product</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/update-product.css}">
 </head>
 <body>
 
@@ -56,14 +56,17 @@
                 <!-- Form Right: Product Image -->
                 <div class="form-right">
                     <div class="image-container">
+                        <!-- Current Image Container -->
                         <div class="current-image-container">
                             <label>Current Image:</label>
                             <img th:src="@{${product.image}}" alt="Current Image" class="current-image">
                         </div>
+
+                        <!-- New Image Container -->
                         <div class="new-image-container">
                             <label>New Image (Optional):</label>
+                            <img id="newImagePreview" class="new-image-preview" style="display: none;" /> <!-- Initially hidden -->
                             <input type="file" name="image" accept=".png, .jpg" onchange="previewImage(event)">
-                            <img id="newImagePreview" class="new-image-preview" />
                         </div>
                     </div>
                 </div>
@@ -84,8 +87,11 @@
         reader.onload = function () {
             var output = document.getElementById('newImagePreview');
             output.src = reader.result;
+            output.style.display = 'block'; // Ensure the image is displayed
         };
-        reader.readAsDataURL(event.target.files[0]);
+        if (event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
     }
 </script>
 
