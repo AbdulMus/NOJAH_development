@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
   <link rel="stylesheet" th:href="@{/css/loginstyle.css}">
+  <link rel="stylesheet" th:href="@{/css/styles.css}"> <!-- Include main styles -->
 </head>
 <body>
-<main>
+<header>
+  <a class="home" href="/">
+    <h1>Makeup & Beauty Inventory</h1>
+  </a>
+</header>
+
+<main class="login-container">
   <h1>Login</h1>
   <form method="post" th:action="@{/login}">
     <input type="text" name="username" placeholder="Username" required>
@@ -15,8 +24,10 @@
   <p th:if="${error}" th:text="${error}" class="error-message"></p>
   <p>Don't have an account? <a th:href="@{/create-account}">Create one</a></p>
 </main>
+
 <footer>
   <p>NOJAH Development Demo.</p>
 </footer>
+
 </body>
 </html>

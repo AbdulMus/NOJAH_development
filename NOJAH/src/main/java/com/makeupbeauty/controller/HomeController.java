@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.*;
 import java.nio.file.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
@@ -520,9 +521,34 @@ public class HomeController {
     // HOME PAGE -------------------------------------------------------------------------------------------------------
 
     @GetMapping("/")
-    public String home(Model model, HttpSession session) {
-        model.addAttribute("products", products);
+    public String home(@RequestParam(required = false) String category,
+                       @RequestParam(required = false) String brand,
+                       Model model,
+                       HttpSession session) {
+
+        ArrayList<Product> filteredResults = new ArrayList<>();
+        Set<String> filteredCategories = new HashSet<>();
+        Set<String> filteredBrands = new HashSet<>();
+
+        for (Product product : products) {
+
+            boolean matchesCategory = (category == null || category.isEmpty()) || product.getCategory().equalsIgnoreCase(category);
+            boolean matchesBrand = (brand == null || brand.isEmpty()) || product.getBrand().equalsIgnoreCase(brand);
+
+            if (matchesCategory && matchesBrand) {
+                filteredResults.add(product);
+                filteredCategories.add(product.getCategory());
+                filteredBrands.add(product.getBrand());
+            }
+        }
+
         checkUser(model, session);
+        model.addAttribute("filteredResults", filteredResults);
+        model.addAttribute("categories", filteredCategories);
+        model.addAttribute("brands", filteredBrands);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("selectedBrand", brand);
+
         return "index";
     }
 

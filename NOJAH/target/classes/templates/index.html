@@ -1,56 +1,103 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Makeup & Beauty</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makeup & Beauty</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/searchstyle.css}">
 </head>
 
 <header>
-  <a class="home" href="/">
-    <h1>Makeup & Beauty Inventory</h1>
-  </a>
-  <nav>
-        <span th:if="${isAdmin}">
-            <a href="/admin">Admin Dashboard</a>
-        </span>
-
-    <span class="logged-in" th:if="${isLoggedIn}">
-            <a href="/my-favorites">My Favorites</a>
-            <span>Logged in: <span th:text="${username}"></span></span>
-            <a href="/logout">Logout</a>
-        </span>
-    <span th:unless="${isLoggedIn}">
-            <a href="/login">Login</a>
-        </span>
-  </nav>
+    <a class="home" href="/">
+        <h1>Makeup & Beauty Inventory</h1>
+    </a>
+    <nav>
+    <span th:if="${isAdmin}">
+      <a href="/admin">Admin Dashboard</a>
+    </span>
+        <span class="logged-in" th:if="${isLoggedIn}">
+      <a href="/my-favorites">My Favorites</a>
+      <span>Logged in: <span th:text="${username}"></span></span>
+      <a href="/logout">Logout</a>
+    </span>
+        <span th:unless="${isLoggedIn}">
+      <a href="/login">Login</a>
+    </span>
+    </nav>
 </header>
-<body>
-<main>
-  <form th:action="@{/search}" method="get" class="search-form">
-    <label>
-      <input type="text" name="query" placeholder="Search for products..." required>
-    </label>
-    <button type="submit"><span>Search</span></button>
-  </form>
 
-  <h2>Featured Products</h2>
-  <div class="product-grid">
-    <div class="product-card" th:each="product : ${products}">
-      <div class="product-info">
-        <a th:href="@{/product/{id}(id=${product.id})}">
-            <img th:src="@{${product.image}}" alt="Product Image">
-          <h3 th:text="${product.name}"></h3>
-        </a>
-        <p><strong>Made By:</strong> <span th:text="${product.brand}"></span></p>
-      </div>
-    </div>
-  </div>
-</main>
+<body>
+<div class="main-container">
+    <!-- Sidebar for Categories/Filters -->
+    <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul>
+            <li><a href="/search?query=Face">Face</a></li>
+            <li><a href="/search?query=Eye">Eye</a></li>
+            <li><a href="/search?query=Lip">Lip</a></li>
+            <li><a href="/search?query=Cheek">Cheek</a></li>
+        </ul>
+        <h3 class="filters">Filter Products</h3>
+        <form action="/" method="get" class="filter-form">
+            <label for="category">Category:</label>
+            <select name="category" id="category">
+                <option value="">All Categories</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category}"
+                        th:text="${category}"
+                        th:selected="${selectedCategory == category}">
+                </option>
+            </select>
+
+            <label for="brand">Brand:</label>
+            <select name="brand" id="brand">
+                <option value="">All Brands</option>
+                <option th:each="brand : ${brands}"
+                        th:value="${brand}"
+                        th:text="${brand}"
+                        th:selected="${selectedBrand == brand}">
+                </option>
+            </select>
+            <button type="submit">Apply Filters</button>
+        </form>
+
+        <form action="/" method="get" class="reset-form" id="reset-form">
+            <button type="submit" class="btn">Reset Filters</button>
+        </form>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+        <form th:action="@{/search}" method="get" class="search-form">
+            <label>
+                <input type="text" name="query" placeholder="Search for products..." required>
+            </label>
+            <button type="submit"><span>Search</span></button>
+        </form>
+
+        <h2>Featured Products</h2>
+        <div th:if="${filteredResults.isEmpty()}">
+            <p>No products found matching your criteria.</p>
+        </div>
+
+        <div class="product-grid-index">
+            <div class="product-card-index" th:each="product : ${filteredResults}">
+                <div class="product-info-index">
+                    <a th:href="@{/product/{id}(id=${product.id})}">
+                        <img th:src="@{${product.image}}" alt="Product Image">
+                        <h3 th:text="${product.name}"></h3>
+                    </a>
+                    <p><strong>Made By:</strong> <span th:text="${product.brand}"></span></p>
+                    <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
 <footer>
-  <p>NOJAH Development Demo.</p>
+    <p>NOJAH Development Demo.</p>
 </footer>
 </body>
 </html>
