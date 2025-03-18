@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.*;
 import java.nio.file.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
@@ -64,16 +63,19 @@ public class HomeController {
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length == 3) { // Now expecting 3 columns: username, password, favorites
+                String favorites = null;
+                if (values.length >= 2) {
                     String name = values[0].trim().toUpperCase();
                     String password = values[1].trim();
-                    String favorites = values[2].trim();
+                    if (values.length == 3) {
+                        favorites = values[2].trim();
+                    }
 
                     // An empty list to store favorite products
                     ArrayList<Product> favProducts = new ArrayList<>();
 
                     // Check if the favorites string is not empty
-                    if (!favorites.isEmpty()) {
+                    if (favorites != null) {
                         // Split the favorites string into individual product IDs
                         String[] favoriteIds = favorites.split(";");
 
@@ -100,7 +102,7 @@ public class HomeController {
                         }
                     }
 
-                    User user = new User(name, password, favProducts); // Cart is null for now
+                    User user = new User(name, password, favProducts);
                     users.put(name, user);
 
                     // Load favorites into userFavorites map
@@ -111,6 +113,8 @@ public class HomeController {
                         favSet.add(product.getId());
                     }
                     userFavorites.put(name, favSet);
+                } else {
+                    System.err.println("Failed to load" + line + " from CSV file");
                 }
             }
         } catch (IOException e) {
