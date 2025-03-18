@@ -65,7 +65,7 @@ public class HomeController {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (values.length == 3) { // Now expecting 3 columns: username, password, favorites
-                    String name = values[0].trim();
+                    String name = values[0].trim().toUpperCase();
                     String password = values[1].trim();
                     String favorites = values[2].trim();
 
