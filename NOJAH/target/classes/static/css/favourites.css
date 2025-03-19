@@ -76,6 +76,17 @@ main {
     max-width: 1200px;
     margin: 0 auto;
 }
+button {
+    padding: 12px 25px;
+    background-color: #d10060;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
 
 /* Search Form Styles */
 .search-form {

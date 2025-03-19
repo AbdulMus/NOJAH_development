@@ -43,9 +43,13 @@
             <span th:text="${product.brand}">Product Brand</span>
             <p th:text="${product.description}">A matte lipstick with hydrating formula.</p>
         </div>
-        <form action="/favorite" method="post">
+        <form th:if="${userFavorites != null && !userFavorites.contains(product.id)}" action="/favorite" method="post">
             <input type="hidden" name="productId" th:value="${product.id}" />
             <button type="submit">Add to Favorites</button>
+        </form>
+        <form th:if="${userFavorites != null && userFavorites.contains(product.id)}" action="/unfavorite" method="post">
+            <input type="hidden" name="productId" th:value="${product.id}" />
+            <button type="submit">Remove from Favorites</button>
         </form>
 
     </div>

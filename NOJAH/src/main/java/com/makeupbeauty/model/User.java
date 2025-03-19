@@ -1,8 +1,7 @@
 package com.makeupbeauty.model;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class User {
     private String name;
@@ -66,6 +65,9 @@ public class User {
         if (product == null) {
             return;
         }
+        if (favorites.contains(product)) {
+            return;
+        }
 
         this.favorites.add(product);
 
@@ -110,12 +112,12 @@ public class User {
                     String password = values[1].trim();
                     String updatedFavorites = getStringFavorites();
 
+                    writer.newLine();
                     // Write updated line
                     writer.write(name + "," + password + "," + updatedFavorites);
                 } else {
                     writer.write(line);
                 }
-                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,5 +146,13 @@ public class User {
         }
 
         return updatedFavorites;
+    }
+    public Set<Integer> getFavoriteProductIds() {
+        //return favourite item ids
+        Set<Integer> favoriteIds = new HashSet<>();
+        for (Product product : this.favorites) {
+            favoriteIds.add(product.getId());
+        }
+        return favoriteIds;
     }
 }

@@ -126,6 +126,16 @@ main{
     color: #86939E;
     line-height: 24px;
 }
+button {
+    padding: 12px 25px;
+    background-color: #d10060;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
 /*!* Product Price *!*/
 /*.product-price {*/

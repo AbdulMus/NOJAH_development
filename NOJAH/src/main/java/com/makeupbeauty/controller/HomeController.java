@@ -3,7 +3,7 @@ package com.makeupbeauty.controller;
 import com.makeupbeauty.model.Product;
 import com.makeupbeauty.model.User;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -150,18 +150,13 @@ public class HomeController {
 
     // Remove a favorite product
     @PostMapping("/unfavorite")
-    public String removeFavorite(@RequestParam int productId, HttpSession session) {
+    public String removeFavorite(@RequestParam int productId, HttpSession session, HttpServletRequest request) {
         String username = (String) session.getAttribute("user");
 
         if (username == null) {
             return "redirect:/login";
         }
-
         User user = users.get(username.toUpperCase());
-        if (user == null) {
-            return "redirect:/login";
-        }
-
         // Variable to store the found product
         Product product = findProduct(productId);
 
@@ -171,24 +166,25 @@ public class HomeController {
 
         user.removeFavorite(product);
 
-        return "redirect:/my-favorites?success=Removed+from+favorites";
-    }
+        // Get the referer header to determine where the request came from
+        String referer = request.getHeader("Referer");
+        if (referer != null && referer.contains("/my-favorites")) {
+            return "redirect:/my-favorites?success=Removed+from+favorites";
+        } else {
+            return "redirect:/product/" + productId + "?success=Removed+from+favorites";
+        }    }
 
 
     // Show user's favorite products
     @GetMapping("/my-favorites")
     public String showFavorites(Model model, HttpSession session) {
-        checkUser(model, session);
-        String username = model.getAttribute("username").toString();
-
-        if (username == null) {
+        if (session.getAttribute("user") != null) {
+            checkUser(model, session);
+        }else{
             return "redirect:/login";
         }
 
-        User user = users.get(username.toUpperCase());
-        if (user == null) {
-            return "redirect:/login";
-        }
+        User user = users.get(Objects.requireNonNull(model.getAttribute("username")).toString().toUpperCase());
 
         model.addAttribute("favProducts", user.getFavorites());
         return "favorites";
@@ -324,7 +320,6 @@ public class HomeController {
                 String[] values = line.split("\\|,\\|");
                 String id1 = values[0].trim();
                 String imagePath = values[5].trim(); // Assuming image path is stored in column 6
-
                 if (id == Integer.parseInt(id1)) {
                     System.out.println(imagePath);
                     imagePathToDelete = imagePath; // Save image path for deletion
@@ -427,6 +422,17 @@ public class HomeController {
         if (foundProduct != null) {
             model.addAttribute("product", foundProduct);
             checkUser(model, session);
+
+            // Get user's favorite product IDs
+            String username = (String) session.getAttribute("user");
+            if (username != null) {
+                User user = users.get(username.toUpperCase());
+                if (user != null) {
+                    Set<Integer> userFavorites = user.getFavoriteProductIds();
+                    model.addAttribute("userFavorites", userFavorites);
+                }
+            }
+
             return "product"; // Use the new template
         } else {
             return "redirect:/"; // Redirect if product not found
