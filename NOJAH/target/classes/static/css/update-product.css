@@ -5,25 +5,18 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-}
-
 /* Header Styles */
 header {
     background-color: #d10060;
     color: white;
-    padding: 15px 20px;
+    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
+    color: white;
     font-size: 24px;
     margin: 0;
 }
@@ -34,30 +27,49 @@ header a {
 }
 
 header a:hover {
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
-header nav {
+/* Navigation Styles */
+nav {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
-header nav .logged-in {
+nav span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+nav a {
     font-weight: bold;
+    transition: opacity 0.3s;
+    font-family: 'Helvetica', sans-serif;
 }
 
-header nav a {
-    color: white;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: background-color 0.3s;
+nav a:hover {
+    opacity: 0.7;
 }
 
-header nav a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.logged-in {
+    font-family: 'Helvetica', sans-serif;
+    font-weight: bold;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.logged-in span span{
+    margin-left: -5px;
+    margin-right: 10px;
+}
+
+body {
+    font-family: 'Helvetica', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
 }
 
 /* Main Content */
@@ -120,6 +132,7 @@ input[type="text"]:focus, textarea:focus {
 }
 
 textarea {
+    font-family: 'Helvetica', sans-serif;
     resize: vertical;
     min-height: 100px;
 }

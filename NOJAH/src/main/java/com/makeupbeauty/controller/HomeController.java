@@ -356,6 +356,7 @@ public class HomeController {
 
     @GetMapping("/update-product/{id}")
     public String showUpdateProductPage(@PathVariable int id, Model model, HttpSession session) {
+        checkUser(model, session);
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
@@ -442,13 +443,18 @@ public class HomeController {
     // Handle login
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-        if (username.equals("admin") && password.equals("123")) {
-            session.setAttribute("user", username);
-            return "redirect:/";
-        }
-
+//        if (username.equals("admin") && password.equals("123")) {
+//            session.setAttribute("user", username);
+//            return "redirect:/";
+//        }
         User user = users.get(username.toUpperCase());
+
         if (user != null && user.getPassword().equals(password)) {
+            if (user.getName().equalsIgnoreCase("admin")){
+                session.setAttribute("user", username);
+                return "redirect:/";
+            }
+
             session.setAttribute("user", username);
 
             if (!userFavorites.containsKey(username)) {

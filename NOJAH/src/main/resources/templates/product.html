@@ -14,16 +14,17 @@
         <h1>Makeup & Beauty Inventory</h1>
     </a>
     <nav>
-        <span th:if="${isAdmin}">
-            <a href="/admin">Admin Dashboard</a>
-        </span>
+    <span th:if="${isAdmin}">
+      <a href="/admin">Admin Dashboard</a>
+    </span>
         <span class="logged-in" th:if="${isLoggedIn}">
-            <span>Logged in: <span th:text="${username}"></span></span>
-            <a href="/logout">Logout</a>
-        </span>
+      <a href="/my-favorites">My Favorites</a>
+      <span>Logged in: <span th:text="${username}"></span></span>
+      <a href="/logout">Logout</a>
+    </span>
         <span th:unless="${isLoggedIn}">
-            <a href="/login">Login</a>
-        </span>
+      <a href="/login">Login</a>
+    </span>
     </nav>
 </header>
 

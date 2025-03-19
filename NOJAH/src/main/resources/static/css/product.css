@@ -19,7 +19,7 @@ header {
 header h1 {
     color: white;
     font-size: 24px;
-    margin: 0; /* Remove default margin */
+    margin: 0;
 }
 
 header a {
@@ -55,7 +55,6 @@ nav a:hover {
 }
 
 .logged-in {
-    /*margin-left: -10px;*/
     font-family: 'Helvetica', sans-serif;
     font-weight: bold;
     transition: opacity 0.3s;

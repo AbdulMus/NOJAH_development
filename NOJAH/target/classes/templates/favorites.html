@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Favorites</title>
+    <title>My Favourites</title>
     <link rel="stylesheet" th:href="@{/css/favourites.css}">
 </head>
 <body>
 
 <header>
     <a class="home" href="/">
-        <h1>My Favorite Products</h1>
+        <h1>Makeup & Beauty Inventory</h1>
     </a>
+    <nav>
+    <span th:if="${isAdmin}">
+      <a href="/admin">Admin Dashboard</a>
+    </span>
+        <span class="logged-in" th:if="${isLoggedIn}">
+      <a href="/my-favorites">My Favorites</a>
+      <span>Logged in: <span th:text="${username}"></span></span>
+      <a href="/logout">Logout</a>
+    </span>
+        <span th:unless="${isLoggedIn}">
+      <a href="/login">Login</a>
+    </span>
+    </nav>
 </header>
 
 <main>
-    <h2>Your Favorited Items</h2>
+    <h2>Your Favourited Items</h2>
 
     <div class="product-grid">
         <div class="product-card" th:each="product : ${favProducts}">

@@ -10,8 +10,14 @@
     <h1>Makeup & Beauty Inventory</h1>
   </a>
   <nav>
-    <span class="logged-in">Logged in: <span th:text="${username}"></span></span>
-    <a href="/logout">Logout</a>
+    <span class="logged-in" th:if="${isLoggedIn}">
+      <a href="/my-favorites">My Favorites</a>
+      <span>Logged in: <span th:text="${username}"></span></span>
+      <a href="/logout">Logout</a>
+    </span>
+    <span th:unless="${isLoggedIn}">
+      <a href="/login">Login</a>
+    </span>
   </nav>
 </header>
 
@@ -27,42 +33,48 @@
         </div>
         <div class="category_and_image">
           <input type="text" name="category" placeholder="Category" required>
-          <input type="file" name="image" accept=".png, .jpg" required>
+          <input type="file" name="image" accept=".png, .jpg" onchange="previewImage(event)">
         </div>
         <div class="description">
           <textarea name="description" rows="3" placeholder="Enter product description..."></textarea>
         </div>
+        <div class="image">
+          <label>Image:</label>
+        </div>
+        <div class="image-container">
+          <img id="newImagePreview" class="image-preview" style="display: none;"/> <!-- Initially hidden -->
+        </div>
         <button type="submit">Add Product</button>
       </form>
 
-      <!-- Update Container -->
-      <div class="update-container">
-        <h2>Update Product</h2>
-        <form method="post" th:action="@{/update-product}" enctype="multipart/form-data">
-          <div class="old-product">
-            <label for="category">Choose Product:</label>
-            <select name="category" id="category">
-              <option th:each="product : ${products}"
-                      th:value="${product.id}"
-                      th:text="${product.name}"
-                      th:selected="${selectedProduct == product.name}">
-              </option>
-            </select>
-          </div>
-          <div class="name_and_brand">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="text" name="brand" placeholder="Brand" required>
-          </div>
-          <div class="category_and_image">
-            <input type="text" name="category" placeholder="Category" required>
-            <input type="file" name="image" accept=".png, .jpg" required>
-          </div>
-          <div class="description">
-            <textarea name="description" rows="3" placeholder="Product description..."></textarea>
-          </div>
-          <button type="submit">Update Product</button>
-        </form>
-      </div>
+<!--      &lt;!&ndash; Update Container &ndash;&gt;-->
+<!--      <div class="update-container">-->
+<!--        <h2>Update Product</h2>-->
+<!--        <form method="post" th:action="@{/update-product}" enctype="multipart/form-data">-->
+<!--          <div class="old-product">-->
+<!--            <label for="category">Choose Product:</label>-->
+<!--            <select name="category" id="category">-->
+<!--              <option th:each="product : ${products}"-->
+<!--                      th:value="${product.id}"-->
+<!--                      th:text="${product.name}"-->
+<!--                      th:selected="${selectedProduct == product.name}">-->
+<!--              </option>-->
+<!--            </select>-->
+<!--          </div>-->
+<!--          <div class="name_and_brand">-->
+<!--            <input type="text" name="name" placeholder="Name" required>-->
+<!--            <input type="text" name="brand" placeholder="Brand" required>-->
+<!--          </div>-->
+<!--          <div class="category_and_image">-->
+<!--            <input type="text" name="category" placeholder="Category" required>-->
+<!--            <input type="file" name="image" accept=".png, .jpg" required>-->
+<!--          </div>-->
+<!--          <div class="description">-->
+<!--            <textarea name="description" rows="3" placeholder="Product description..."></textarea>-->
+<!--          </div>-->
+<!--          <button type="submit">Update Product</button>-->
+<!--        </form>-->
+<!--      </div>-->
     </div>
 
     <!-- Product List Container -->
@@ -85,7 +97,7 @@
           <td>
             <form method="post" th:action="@{/update-product}">
               <input type="hidden" name="id" th:value="${product.id}">
-              <a th:href="@{/update-product/{id}(id=${product.id})}">
+              <a class="update-button" th:href="@{/update-product/{id}(id=${product.id})}">
                 <button type="button">Update</button>
                 </a>
             </form>
@@ -105,4 +117,17 @@
   <p>NOJAH Development Demo.</p>
 </footer>
 </body>
+<script>
+  function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var output = document.getElementById('newImagePreview');
+      output.src = reader.result;
+      output.style.display = 'block'; // Ensure the image is displayed
+    };
+    if (event.target.files[0]) {
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+</script>
 </html>
