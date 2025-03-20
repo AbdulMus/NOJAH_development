@@ -87,6 +87,7 @@ public class User {
     private void printFavorites() {
         List<String> lines = new ArrayList<>();
 
+        // Read existing file contents
         try (BufferedReader br = new BufferedReader(new FileReader(userPath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -97,27 +98,27 @@ public class User {
             return;
         }
 
+        // Write updated contents back to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userPath))) {
             writer.write("username,password,favorites"); // Write header
             writer.newLine();
 
             for (String line : lines) {
                 if (line.startsWith("username,password,favorites")) {
-                    continue; // Skip the header line
+                    continue;
                 }
 
                 String[] values = line.split(",");
                 if (values.length >= 2 && values[0].trim().equalsIgnoreCase(this.name)) {
+                    // Update the user's favorites
                     String name = values[0].trim();
                     String password = values[1].trim();
                     String updatedFavorites = getStringFavorites();
-
-                    writer.newLine();
-                    // Write updated line
                     writer.write(name + "," + password + "," + updatedFavorites);
                 } else {
                     writer.write(line);
                 }
+                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -147,6 +148,7 @@ public class User {
 
         return updatedFavorites;
     }
+
     public Set<Integer> getFavoriteProductIds() {
         //return favourite item ids
         Set<Integer> favoriteIds = new HashSet<>();

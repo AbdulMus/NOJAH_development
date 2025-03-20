@@ -47,8 +47,6 @@ public class HomeController {
         return foundProduct;
     }
 
-    // USERS -----------------------------------------------------------------------------------------------------------
-
     public void checkUser(Model model, HttpSession session) {
         if (session.getAttribute("user") != null) {
             model.addAttribute("isLoggedIn", session.getAttribute("user") != null);
@@ -56,6 +54,9 @@ public class HomeController {
         }
         model.addAttribute("isAdmin", "admin".equals(session.getAttribute("user")));
     }
+
+    // USERS -----------------------------------------------------------------------------------------------------------
+
 
     public void loadUsersFromCSV(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
