@@ -305,6 +305,8 @@ public class HomeController {
             return "redirect:/login";
         }
 
+        Product removedProduct = findProduct(id);
+
         products.removeIf(product -> product.getId() == id);
 
         String filepath = "src/main/resources/catalog.txt";
@@ -344,6 +346,12 @@ public class HomeController {
         if (imagePathToDelete != null) {
             deleteImage(imagePathToDelete);
 
+        }
+
+        for (String user : users.keySet()) {
+            if (users.get(user).getFavorites().contains(removedProduct)) {
+                users.get(user).removeFavorite(removedProduct);
+            }
         }
 
         return "redirect:/admin";
