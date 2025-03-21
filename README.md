@@ -9,10 +9,6 @@ Welcome to our Beauty Product Catalog Management System! This project helps you 
 - [Key Features](#key-features)
 - [How to Get Started](#how-to-get-started)
 - [Using the App](#using-the-app)
-- [How to Contribute](#how-to-contribute)
-- [Future Plans](#future-plans)
-- [License](#license)
-- [Contact](#contact)
 
 ## Overview
 
