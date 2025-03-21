@@ -18,13 +18,11 @@ public class ProductTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialize a product
         product = new Product(1, "Test Product", "Test Brand", "Test Description", "Test Category", "test.jpg");
     }
 
     @Test
     public void testSaveProductsToCSV() {
-        // Step 1: Read the original content of the CSV file (if it exists)
         List<String> originalLines = new ArrayList<>();
         File file = new File(catalogFilePath);
         if (file.exists()) {
@@ -38,19 +36,14 @@ public class ProductTest {
             }
         }
 
-        // Step 2: Call the method to save the product to the CSV file
         product.saveProductsToCSV();
 
-        // Step 3: Verify that the CSV file was updated correctly
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            // Skip the header line
             String header = reader.readLine();
 
-            // Read the product line
             String productLine = reader.readLine();
             assertNotNull(productLine, "CSV file should contain product data");
 
-            // Verify the product data
             String[] values = productLine.split("\\|,\\|");
             if (values[0].equalsIgnoreCase("1") && values[1].equalsIgnoreCase("Test Product")
                     && values[2].equalsIgnoreCase("Test Brand") && values[3].equalsIgnoreCase("Test Description")
@@ -62,7 +55,6 @@ public class ProductTest {
         } catch (IOException e) {
             fail("Failed to read the updated CSV file: " + e.getMessage());
         } finally {
-            // Step 4: Restore the original content of the CSV file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 for (String line : originalLines) {
                     writer.write(line);
@@ -76,7 +68,6 @@ public class ProductTest {
 
     @Test
     public void testSaveUpdateToCSV() {
-        // Step 1: Read the original content of the CSV file (if it exists)
         List<String> originalLines = new ArrayList<>();
         File file = new File(catalogFilePath);
         if (file.exists()) {
@@ -90,10 +81,8 @@ public class ProductTest {
             }
         }
 
-        // Step 2: Add a product to the CSV file (to simulate an existing product)
         product.saveProductsToCSV();
 
-        // Step 3: Update the product and save the changes
         product.setName("Updated Product");
         product.setBrand("Updated Brand");
         product.setDescription("Updated Description");
@@ -101,16 +90,12 @@ public class ProductTest {
         product.setImage("updated.jpg");
         product.saveUpdateToCSV();
 
-        // Step 3: Verify that the CSV file was updated correctly
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            // Skip the header line
             String header = reader.readLine();
 
-            // Read the product line
             String productLine = reader.readLine();
             assertNotNull(productLine, "CSV file should contain product data");
 
-            // Verify the product data
             String[] values = productLine.split("\\|,\\|");
             if (values[0].equalsIgnoreCase("1") && values[1].equalsIgnoreCase("Updated Product")
                     && values[2].equalsIgnoreCase("Updated Brand") && values[3].equalsIgnoreCase("Updated Description")
@@ -122,7 +107,6 @@ public class ProductTest {
         } catch (IOException e) {
             fail("Failed to read the updated CSV file: " + e.getMessage());
         } finally {
-            // Step 4: Restore the original content of the CSV file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 for (String line : originalLines) {
                     writer.write(line);
