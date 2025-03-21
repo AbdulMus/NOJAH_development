@@ -95,7 +95,6 @@ Here’s an overview of the project structure:
 ```plaintext
 NOJAH/
 ├── .idea/
-├── classes
 ├── src/                                                    
 │   ├── main/                                               
 │   │   ├── java/                                           
@@ -129,15 +128,14 @@ NOJAH/
 │   │       └── users.csv/                          
 │   └── test/                                              
 │       └── java/                                           
-│           ├── HomeControllerTest.java                        
 │           ├── ProductTest.java                          
-│           └── UserTest.java                           
+│           └── UserTest.java
 ├── target/ 
-├── uploads/
+├── uploads/                           
+├── .DS_Store
 ├── build-and-run.sh
 ├── HOW-TO-RUN.md
 ├── mvnw
-├── mvnw.cmd
-├── build-and-run.sh                                                  
-└──  pom.xml                                             
+├── mvnw.cmd                                                
+└── pom.xml                                             
 ```
