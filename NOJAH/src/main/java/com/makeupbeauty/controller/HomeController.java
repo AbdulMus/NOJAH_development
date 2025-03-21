@@ -621,12 +621,33 @@ public class HomeController {
     // ADMIN PAGE ------------------------------------------------------------------------------------------------------
 
     @GetMapping("/admin")
-    public String adminPage(Model model, HttpSession session) {
+    public String adminPage(@RequestParam(required = false) String query, Model model, HttpSession session) {
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
+
         checkUser(model, session);
-        model.addAttribute("products", products);
+
+        // Handle null query properly
+        if (query == null || query.trim().isEmpty()) {
+            query = ""; // Set to an empty string to avoid null pointer issues
+        } else {
+            query = query.toLowerCase();
+        }
+
+        ArrayList<Product> searchResults = new ArrayList<>();
+        for (Product product : products) {
+            boolean matchesQuery = product.getName().toLowerCase().contains(query) ||
+                    product.getBrand().toLowerCase().contains(query) ||
+                    product.getDescription().toLowerCase().contains(query) ||
+                    product.getCategory().toLowerCase().contains(query);
+
+            if (matchesQuery) {
+                searchResults.add(product);
+            }
+        }
+
+        model.addAttribute("products", searchResults);
         return "admin";
     }
 }

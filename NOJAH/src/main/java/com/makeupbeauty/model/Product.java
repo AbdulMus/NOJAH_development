@@ -1,6 +1,8 @@
 package com.makeupbeauty.model;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
     private Integer id;
@@ -132,6 +134,14 @@ public class Product {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setLabels(List<String> labels) {
+        return;
+    }
+
+    public List<String> getLabels() {
+        return new ArrayList<>();
     }
 
     @Override

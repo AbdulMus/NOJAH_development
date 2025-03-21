@@ -80,6 +80,7 @@
     <!-- Product List Container -->
     <div class="product-list-container">
       <h2>Product List</h2>
+
       <table>
         <tr>
           <th>ID</th>
@@ -87,6 +88,14 @@
           <th>Image</th>
           <th>Update</th>
           <th>Delete</th>
+        </tr>
+        <tr>
+          <form th:action="@{/admin}" method="get" class="search-form">
+            <label>
+              <input type="text" name="query" placeholder="Search for products..." required>
+            </label>
+            <button type="submit"><span>Search</span></button>
+          </form>
         </tr>
         <tr th:each="product : ${products}">
           <td th:text="${product.id}"></td>

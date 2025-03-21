@@ -198,9 +198,59 @@ form button:hover {
     background-color: #b00050;
 }
 
-.update-container {
-    margin-top: 30px;
-    border-radius: 8px;
+/* Search Form Styles */
+.search-form {
+    margin-bottom: 40px;
+}
+
+.search-form input[type="text"] {
+    padding: 12px;
+    width: 300px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-form input[type="text"]:focus {
+    border-color: hotpink;
+}
+
+.search-form button {
+    padding: 12px 25px;
+    background-color: deeppink;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.search-form button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.search-form button:hover span {
+    padding-right: 25px;
+}
+
+.search-form button:hover span:after {
+    opacity: 1;
+    right: 0;
 }
 
 /* Product List Container */
