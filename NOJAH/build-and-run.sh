@@ -1,17 +1,19 @@
 #!/bin/bash
 
-# Navigate to the project directory (if not already there)
+# Find directory
 cd "$(dirname "$0")"
 
-# Clean and build the project using Maven
-echo "Building the project..."
+# Clean and build
 mvn clean install
+
+# Opens website (must refresh)
+open http://localhost:8080/
 
 # Check if the build was successful
 if [ $? -eq 0 ]; then
-    echo "Build successful! Starting the application..."
-    # Run the Spring Boot application
+    # Run the application
     mvn spring-boot:run
 else
+    # If failed, display error
     echo "Build failed. Please check the errors above."
 fi

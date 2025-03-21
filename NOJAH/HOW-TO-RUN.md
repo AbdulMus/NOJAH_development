@@ -23,7 +23,7 @@ java -version
 mvn -v
 ```
 
-### Git (optional)
+### Git
 - To clone the repository.
 - Download and install Git from [Git's official website](https://git-scm.com/).
 - Verify the installation:
@@ -32,7 +32,7 @@ mvn -v
 git --version
 ```
 
-## Getting Started
+## How To Build & Run 
 
 ### 1. Clone the Repository
 If you haven't already, clone the repository to your local machine:
@@ -79,6 +79,18 @@ You should see the homepage of the Makeup Beauty Application.
 
 ### 5. Stopping the Application
 To stop the application, press `Ctrl + C` in the terminal where the application is running.
+
+### Build-And-Run Script
+To run the build-and-run.sh file, first make sure the right permissions are set:
+
+```bash
+chmod +x ./build-and-run.sh
+```
+
+Then run the script. Make sure to refresh the page when loaded in.
+```bash
+./build-and-run.sh
+```
 
 ## Testing the Application
 To run the unit tests included in the project, use the following command:

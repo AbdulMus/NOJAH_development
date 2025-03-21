@@ -503,6 +503,15 @@ public class HomeController {
             return "create-account";
         }
 
+        if (!(password.length() >= 8 &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*\\d.*") &&
+                password.matches(".*[!@#$%^&*(),.?\":{}|<>].*"))){
+            model.addAttribute("error", "Password must contain: 8+ characters, An Uppercase Letter, A Lowercase Letter, A Number, A Special Character");
+            return "create-account";
+        }
+
         if (!password.equals(confirmPassword)) {
             model.addAttribute("error", "Passwords do not match.");
             return "create-account";
