@@ -18,7 +18,7 @@ public class ProductTest {
 
     @BeforeEach
     public void setUp() {
-        product = new Product(1, "Test Product", "Test Brand", "Test Description", "Test Category", "test.jpg");
+        product = new Product(1, "Test Product", "Test Brand", "Test Description", "Test Category", "test.jpg", new ArrayList<>());
     }
 
     @Test
@@ -118,15 +118,15 @@ public class ProductTest {
         }
     }
 
-//    @Test
-//    public void testAddLabelsToProduct() {
-//        List<String> labels = Arrays.asList("eco-friendly", "cruelty-free");
-//        product.setLabels(labels);
-//
-//
-//        List<String> retrievedLabels = product.getLabels();
-//
-//        // Expected: 2. Result: 0
-//        assertEquals(2, retrievedLabels.size(), "There should be 2 labels");
-//    }
+    @Test
+    public void testAddLabelsToProduct() {
+        List<String> labels = Arrays.asList("eco-friendly", "cruelty-free");
+        product.setLabels(labels);
+
+
+        List<String> retrievedLabels = product.getLabels();
+
+        // Expected: 2. Result: 0
+        assertEquals(2, retrievedLabels.size(), "There should be 2 labels");
+    }
 }

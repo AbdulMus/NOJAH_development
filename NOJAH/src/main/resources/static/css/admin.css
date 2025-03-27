@@ -102,6 +102,83 @@ form {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Labels Section Styles */
+.labels-section {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #e1e8ee;
+}
+
+.labels-section h3 {
+    margin: 0 0 10px 0;
+    color: #43484D;
+    font-size: 1rem;
+}
+
+.label-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.label-input-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.label-input-container button {
+    padding: 10px 15px;
+    background-color: #5ae391;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.label-input-container button:hover {
+    background-color: #4acd81;
+}
+
+.selected-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.selected-label {
+    background-color: rgba(144, 238, 144, 0.3);
+    border-radius: 15px;
+    padding: 6px 12px 6px 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #2E8B57;
+    border: 1px solid rgba(46, 139, 87, 0.2);
+    font-weight: bold;
+}
+
+.selected-label button {
+    background: none;
+    border: none;
+    color: #d10060;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    font-size: 0.9rem;
+}
+
+.selected-label button:hover {
+    color: #a00050;
+}
+
 /* Image Upload Section */
 .image {
     margin-top: -10px;
@@ -194,9 +271,9 @@ form button {
     transition: background-color 0.3s ease;
 }
 
-form button:hover {
-    background-color: #b00050;
-}
+/*form button:hover {*/
+/*    background-color: #b00050;*/
+/*}*/
 
 /* Search Form Styles */
 .search-form {
@@ -280,6 +357,15 @@ table th, table td {
     white-space: nowrap;
 }
 
+table th[name="name"], table td:nth-child(2) {
+    text-align: left;
+    word-wrap: break-word;
+    white-space: normal;
+    max-width: 200%; /* Adjust as needed */
+    overflow-wrap: break-word;
+}
+
+
 table th {
     text-align: center;
     background-color: #d10060;
@@ -318,4 +404,52 @@ footer {
     font-size: 14px;
     width: 100%;
     margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .form-container, .product-list-container {
+        max-width: 100%;
+    }
+
+    .name_and_brand, .category_and_image {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    form input[type="text"], form textarea, form input[type="file"] {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logged-in {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-form input[type="text"] {
+        width: 100%;
+    }
 }

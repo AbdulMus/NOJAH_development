@@ -21,8 +21,8 @@ public class UserTest {
         user = new User("testUser", "testPass", new ArrayList<>());
 
         products = new ArrayList<>();
-        products.add(new Product(1, "Product1", "Brand1", "Description1", "Category1", "image1.jpg"));
-        products.add(new Product(2, "Product2", "Brand2", "Description2", "Category2", "image2.jpg"));
+        products.add(new Product(1, "Product1", "Brand1", "Description1", "Category1", "image1.jpg", new ArrayList<>()));
+        products.add(new Product(2, "Product2", "Brand2", "Description2", "Category2", "image2.jpg", new ArrayList<>()));
 
     }
 

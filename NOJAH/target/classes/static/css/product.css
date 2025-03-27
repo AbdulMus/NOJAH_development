@@ -88,7 +88,6 @@ main{
     margin-top: 60px;
 }
 
-
 .left-column img {
     width: auto;
     max-height: 600px;
@@ -96,7 +95,6 @@ main{
     display: block;
     margin: 50px auto;
 }
-
 
 /* Right Column */
 
@@ -126,6 +124,7 @@ main{
     color: #86939E;
     line-height: 24px;
 }
+
 button {
     padding: 12px 25px;
     background-color: #d10060;
@@ -137,38 +136,56 @@ button {
     transition: background-color 0.3s ease;
 }
 
-/*!* Product Price *!*/
-/*.product-price {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*}*/
+/* Label Styles */
+.label-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
-/*.product-price span {*/
-/*    font-size: 26px;*/
-/*    font-weight: 300;*/
-/*    color: #43474D;*/
-/*    margin-right: 20px;*/
-/*}*/
+.label-list li {
+    background-color: rgba(144, 238, 144, 0.3); /* Light green with 30% opacity */
+    border-radius: 4px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #5ae391;
+    border: 1px solid rgba(46, 139, 87, 0.2);
+    box-sizing: border-box;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    font-family: 'Helvetica', sans-serif;
+    max-width: 35%;
+}
 
-/*.cart-btn {*/
-/*    display: inline-block;*/
-/*    background-color: #7DC855;*/
-/*    border-radius: 6px;*/
-/*    font-size: 16px;*/
-/*    color: #FFFFFF;*/
-/*    text-decoration: none;*/
-/*    padding: 12px 30px;*/
-/*    transition: all .5s;*/
-/*}*/
-/*.cart-btn:hover {*/
-/*    background-color: #64af3d;*/
-/*}*/
+.label-list span{
+    color: #1ad88c;
+}
 
-@media (max-width: 535px) {
-    .left-column img {
-        width: 220px;
-        top: -85px;
-    }
+/* Icon specific styles */
+.label-list i.fa-leaf {
+    color: #2E8B57;
+    max-width: 50px;
+}
+
+.label-list i.fa-shield-dog {
+    color: #2E8B57;
+    max-width: 50px;
+
+}
+
+.label-list i.fa-tree {
+    color: #2E8B57;
+    max-width: 50px;
+
 }
 
 footer {

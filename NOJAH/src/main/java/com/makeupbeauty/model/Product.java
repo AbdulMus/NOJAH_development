@@ -11,16 +11,18 @@ public class Product {
     private String description;
     private String image;
     private String category;
+    private ArrayList<String> labels;
     private final String catalogPath = "src/main/resources/catalog.txt";
 
     // Constructor
-    public Product(Integer id, String name, String brand, String description,String category, String image) {
+    public Product(Integer id, String name, String brand, String description,String category, String image, ArrayList<String> labels) {
         this.id = id;
         this.name = name;
         this.brand = brand;
         this.description = description;
         this.category = category;
         this.image = image;
+        this.labels = labels;
     }
 
     public Integer getId() {
@@ -71,6 +73,23 @@ public class Product {
         this.image = image;
     }
 
+    public void setLabels(List<String> labels) {
+        this.labels = new ArrayList<>();
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public String getLabelsString() {
+        StringBuilder sb = new StringBuilder();
+        for (String label : labels) {
+            sb.append(label);
+            sb.append(";");
+        }
+        return sb.toString();
+    }
+
     public void saveProductsToCSV() {
         String productLine = String.join("|,|",
                 String.valueOf(this.getId()),  // Product ID
@@ -78,7 +97,8 @@ public class Product {
                 this.getBrand(),               // Product brand
                 this.getDescription(),         // Product description
                 this.getCategory(),            // Product category
-                this.getImage()                // Product image
+                this.getImage(),               // Product image
+                this.getLabelsString()
         );
         // Append the new product to the CSV file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(catalogPath, true))) {
@@ -136,14 +156,6 @@ public class Product {
         }
     }
 
-    public void setLabels(List<String> labels) {
-        return;
-    }
-
-    public List<String> getLabels() {
-        return new ArrayList<>();
-    }
-
     @Override
     public String toString() {
         return "Product{" +
@@ -153,6 +165,7 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
                 ", image='" + image + '\'' +
+                ", labels=" + labels +
                 '}';
     }
 }

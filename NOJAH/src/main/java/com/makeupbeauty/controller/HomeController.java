@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.*;
 import java.nio.file.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
@@ -201,8 +202,8 @@ public class HomeController {
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty()) continue; // skip empty lines
                 String[] values = line.split("\\|,\\|");
-
-                if (values.length == 6) {
+                String labelsTxt = null;
+                if (values.length >= 6) {
                     int id = Integer.parseInt(values[0].trim());
                     String name = values[1].trim();
                     String brand = values[2].trim();
@@ -210,7 +211,27 @@ public class HomeController {
                     String category = values[4].trim();
                     String image = values[5].trim();
 
-                    products.add(new Product(id, name, brand, description, category, image));
+                    if (values.length == 7){
+                        labelsTxt = values[6].trim();
+                    }
+
+                    ArrayList<String> productLabels = new ArrayList<>();
+
+                    // Check if the favorites string is not empty
+                    if (labelsTxt != null) {
+                        // Split the favorites string into individual product IDs
+                        String[] labels = labelsTxt.split(";");
+
+                        // Loop through each product ID
+                        for (String l : labels) {
+                            // Step 8: If the product was found, add it to the favProducts list
+                            if (l != null) {
+                                productLabels.add(l);
+                            }
+                        }
+                    }
+
+                    products.add(new Product(id, name, brand, description, category, image, productLabels));
                 } else {
                     System.err.println("Invalid Product Type: " + line);
                 }
@@ -219,6 +240,8 @@ public class HomeController {
             System.err.println("Error reading CSV file: " + e.getMessage());
             e.printStackTrace();
         }
+
+        System.out.println(products);
     }
 
     public String saveImage(MultipartFile image) throws IOException {
@@ -266,9 +289,10 @@ public class HomeController {
             @RequestParam String description,
             @RequestParam String category,
             @RequestParam("image") MultipartFile image,
+            @RequestParam(name = "labels", required = false) String labelsString, // Changed to String
             HttpSession session) {
 
-        // Check if the user is logged in and has 'admin' role
+        // Check admin privileges
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
             return "redirect:/login";
         }
@@ -284,10 +308,20 @@ public class HomeController {
         }
 
         try {
-            String imagePath = saveImage(image);  // Use the new function
+            String imagePath = saveImage(image);
+
+            // Process labels - create empty list if none provided
+            ArrayList<String> productLabels = new ArrayList<>();
+            if (labelsString != null && !labelsString.trim().isEmpty()) {
+                // Split by semicolon and filter out empty strings
+                productLabels = Arrays.stream(labelsString.split(";"))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toCollection(ArrayList::new));
+            }
 
             int newId = products.size() + 1;
-            Product newProduct = new Product(newId, name, brand, description, category, imagePath);
+            Product newProduct = new Product(newId, name, brand, description, category, imagePath, productLabels);
             products.add(newProduct);
             newProduct.saveProductsToCSV();
 
@@ -296,7 +330,6 @@ public class HomeController {
             return "redirect:/admin?error=Failed to upload image. Please try again.";
         }
 
-        // Redirect to the admin page with success message
         return "redirect:/admin?success=Product added successfully";
     }
 
@@ -424,6 +457,7 @@ public class HomeController {
         for (Product product : products) {
             if (product.getId() == id) {
                 foundProduct = product;
+                System.out.println("Product Labels: " + product.getLabels()); // Debug output
                 break;
             }
         }
@@ -657,6 +691,19 @@ public class HomeController {
         }
 
         model.addAttribute("products", searchResults);
+
+        ArrayList<String> allLabels = new ArrayList<>();
+        for (Product product : products) {
+            if (product.getLabels() != null && !product.getLabels().isEmpty()) {
+                for (String label : product.getLabels()) {
+                    if (!allLabels.contains(label)) {
+                        allLabels.add(label);
+                    }
+                }
+            }
+        }
+        System.out.println(allLabels);
+        model.addAttribute("labels", allLabels);
         return "admin";
     }
 }

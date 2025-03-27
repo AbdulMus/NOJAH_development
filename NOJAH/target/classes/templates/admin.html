@@ -3,6 +3,8 @@
 <head>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <!-- Add Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <header>
@@ -38,6 +40,24 @@
         <div class="description">
           <textarea name="description" rows="3" placeholder="Enter product description..."></textarea>
         </div>
+
+        <div class="labels-section">
+          <h3>Labels</h3>
+          <div class="label-input-container">
+            <select id="labelSelect" class="label-dropdown">
+              <option th:each="label : ${labels}"
+                      th:value="${label}"
+                      th:text="${label}">
+              </option>
+            </select>
+            <button type="button" onclick="addLabel()" class="add-label-btn">Add Label</button>
+          </div>
+          <div class="selected-labels" id="selectedLabelsContainer">
+            <!-- Selected labels will appear here -->
+          </div>
+          <input type="hidden" id="labelsInput" name="labels">
+        </div>
+
         <div class="image">
           <label>Image:</label>
         </div>
@@ -46,41 +66,11 @@
         </div>
         <button type="submit">Add Product</button>
       </form>
-
-<!--      &lt;!&ndash; Update Container &ndash;&gt;-->
-<!--      <div class="update-container">-->
-<!--        <h2>Update Product</h2>-->
-<!--        <form method="post" th:action="@{/update-product}" enctype="multipart/form-data">-->
-<!--          <div class="old-product">-->
-<!--            <label for="category">Choose Product:</label>-->
-<!--            <select name="category" id="category">-->
-<!--              <option th:each="product : ${products}"-->
-<!--                      th:value="${product.id}"-->
-<!--                      th:text="${product.name}"-->
-<!--                      th:selected="${selectedProduct == product.name}">-->
-<!--              </option>-->
-<!--            </select>-->
-<!--          </div>-->
-<!--          <div class="name_and_brand">-->
-<!--            <input type="text" name="name" placeholder="Name" required>-->
-<!--            <input type="text" name="brand" placeholder="Brand" required>-->
-<!--          </div>-->
-<!--          <div class="category_and_image">-->
-<!--            <input type="text" name="category" placeholder="Category" required>-->
-<!--            <input type="file" name="image" accept=".png, .jpg" required>-->
-<!--          </div>-->
-<!--          <div class="description">-->
-<!--            <textarea name="description" rows="3" placeholder="Product description..."></textarea>-->
-<!--          </div>-->
-<!--          <button type="submit">Update Product</button>-->
-<!--        </form>-->
-<!--      </div>-->
     </div>
 
     <!-- Product List Container -->
     <div class="product-list-container">
       <h2>Product List</h2>
-
       <table>
         <tr>
           <th>ID</th>
@@ -108,7 +98,7 @@
               <input type="hidden" name="id" th:value="${product.id}">
               <a class="update-button" th:href="@{/update-product/{id}(id=${product.id})}">
                 <button type="button">Update</button>
-                </a>
+              </a>
             </form>
           </td>
           <td>
@@ -132,11 +122,71 @@
     reader.onload = function () {
       var output = document.getElementById('newImagePreview');
       output.src = reader.result;
-      output.style.display = 'block'; // Ensure the image is displayed
+      output.style.display = 'block';
     };
     if (event.target.files[0]) {
       reader.readAsDataURL(event.target.files[0]);
     }
   }
+
+  // Label management functions
+  let selectedLabels = [];
+
+  function addLabel() {
+    const select = document.getElementById('labelSelect');
+    const label = select.value;
+
+    if (label && !selectedLabels.includes(label)) {
+      selectedLabels.push(label);
+      updateLabelsDisplay();
+      select.value = ""; // Reset dropdown to placeholder
+    }
+  }
+
+  function removeLabel(label) {
+    selectedLabels = selectedLabels.filter(l => l !== label);
+    updateLabelsDisplay();
+  }
+
+  function updateLabelsDisplay() {
+    const container = document.getElementById('selectedLabelsContainer');
+    const hiddenInput = document.getElementById('labelsInput');
+
+    // Update hidden input with semicolon-separated labels
+    hiddenInput.value = selectedLabels.join(';');
+
+    // Clear and rebuild the display
+    container.innerHTML = '';
+
+    selectedLabels.forEach(label => {
+      const labelElement = document.createElement('div');
+      labelElement.className = 'selected-label';
+
+      // Default icon class
+      let iconClass = 'fa-tag';
+
+      // Set specific icons for known labels
+      if (label.toLowerCase().includes('eco')) iconClass = 'fa-leaf';
+      if (label.toLowerCase().includes('cruelty')) iconClass = 'fa-shield-dog';
+      if (label.toLowerCase().includes('natural')) iconClass = 'fa-tree';
+
+      labelElement.innerHTML = `
+            <span>${label}</span>
+            <i class="fas ${iconClass}"></i>
+            <button type="button" onclick="removeLabel('${label}')">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+      container.appendChild(labelElement);
+    });
+  }
+
+  // Allow adding labels with Enter key
+  document.getElementById('newLabelInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addLabel();
+    }
+  });
 </script>
 </html>
