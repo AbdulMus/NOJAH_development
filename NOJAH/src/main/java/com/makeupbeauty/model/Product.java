@@ -1,5 +1,9 @@
 package com.makeupbeauty.model;
 
+import com.makeupbeauty.controller.HomeController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,7 @@ public class Product {
     private String category;
     private ArrayList<String> labels;
     private final String catalogPath = "src/main/resources/catalog.txt";
+    private static final Logger logger = LoggerFactory.getLogger(Product.class);
 
     // Constructor
     public Product(Integer id, String name, String brand, String description,String category, String image, ArrayList<String> labels) {
@@ -105,7 +110,7 @@ public class Product {
             writer.newLine(); // Add a newline before appending the product
             writer.write(productLine);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
     }
 
@@ -139,7 +144,7 @@ public class Product {
                 System.out.println("Product ID not found in catalog.");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
             return;
         }
 
@@ -152,7 +157,7 @@ public class Product {
             }
             writer.write(updatedContentString);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
     }
 

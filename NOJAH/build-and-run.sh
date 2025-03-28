@@ -1,18 +1,24 @@
 #!/bin/bash
 
 # Find directory
+# shellcheck disable=SC2164
 cd "$(dirname "$0")"
 
-# Clean and build
+# Clean
 mvn clean install
 
-# Opens website (must refresh)
-open http://localhost:8080/
-
 # Check if the build was successful
+# shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
-    # Run the application
-    mvn spring-boot:run
+    # Detect OS and open the website accordingly
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        open http://localhost:8080/
+    else
+        # Linux (uses xdg-open)
+        xdg-open http://localhost:8080/
+    fi
+
 else
     # If failed, display error
     echo "Build failed. Please check the errors above."

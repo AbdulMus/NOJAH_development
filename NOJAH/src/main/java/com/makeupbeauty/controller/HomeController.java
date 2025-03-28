@@ -238,7 +238,7 @@ public class HomeController {
             }
         } catch (Exception e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
 
         System.out.println(products);
@@ -326,7 +326,7 @@ public class HomeController {
             newProduct.saveProductsToCSV();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
             return "redirect:/admin?error=Failed to upload image. Please try again.";
         }
 
@@ -365,7 +365,7 @@ public class HomeController {
             }
         } catch (Exception e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
 
         // Write the updated content back to the file
@@ -373,7 +373,7 @@ public class HomeController {
             String trimmedContent = updatedContent.toString().trim();
             writer.write(trimmedContent);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
 
         // Delete the image file if it exists
@@ -571,7 +571,7 @@ public class HomeController {
     // REST CONTROLLER -------------------------------------------------------------------------------------------------
 
     @RestController
-    public class FileController {
+    public static class FileController {
         private static final String UPLOAD_DIR = "uploads/";
 
         @GetMapping("/uploads/{filename:.+}")

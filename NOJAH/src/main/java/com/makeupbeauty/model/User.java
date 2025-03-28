@@ -1,5 +1,8 @@
 package com.makeupbeauty.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.*;
 
@@ -8,6 +11,7 @@ public class User {
     private String password;
     private ArrayList<Product> favorites;
     private final String userPath = "src/main/resources/users.csv";
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
     // Constructor
     public User(String name, String password, ArrayList<Product> favorites) {
         this.name = name;
@@ -43,7 +47,7 @@ public class User {
             writer.newLine(); // Add a newline before appending the user
             writer.write(userLine);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
     }
 
@@ -94,7 +98,7 @@ public class User {
                 lines.add(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
             return;
         }
 
@@ -121,7 +125,7 @@ public class User {
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(String.valueOf(e));
         }
     }
 
