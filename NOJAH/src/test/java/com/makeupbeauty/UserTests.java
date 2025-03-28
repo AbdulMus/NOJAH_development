@@ -24,7 +24,7 @@ class UserTests {
     // Unit Tests ------------------------------------------------------------------------------------------------------
     @Test
     // Clear Box Test
-    void testAddFavoriteAddsProduct() {
+    void testAddFavorite() {
         user.addFavorite(1, new ArrayList<>(List.of(testProduct)));
         assertEquals(1, user.getFavorites().size());
         assertEquals(testProduct, user.getFavorites().get(0));
@@ -32,7 +32,7 @@ class UserTests {
 
     @Test
     // Clear Box Test
-    void testRemoveFavoriteRemovesProduct() {
+    void testRemoveFavorite() {
         user.addFavorite(1, new ArrayList<>(List.of(testProduct)));
         user.removeFavorite(testProduct);
         assertEquals(0, user.getFavorites().size());
@@ -40,7 +40,7 @@ class UserTests {
 
     @Test
     // Clear Box Test
-    void testGetFavoriteProductIdsReturnsCorrectIds() {
+    void testGetFavorite() {
         user.addFavorite(1, new ArrayList<>(List.of(testProduct)));
         Set<Integer> ids = user.getFavoriteProductIds();
         assertTrue(ids.contains(1));
@@ -49,8 +49,8 @@ class UserTests {
 
     // Integration Test ------------------------------------------------------------------------------------------------
     @Test
-    // Translucent Test Box
-    void testAddFavoriteUpdatesStringRepresentation() {
+    // Translucent Box Test
+    void testGetStringFavorites() {
         user.addFavorite(1, new ArrayList<>(List.of(testProduct)));
         String favoritesString = user.getStringFavorites();
         assertTrue(favoritesString.contains("1"));
@@ -58,7 +58,7 @@ class UserTests {
 
     // System Test -----------------------------------------------------------------------------------------------------
     @Test
-    // Opaque Test Box
+    // Translucent Box Test
     void testCompleteUserLifecycle() {
         User newUser = new User("TestUser", "TestPass", new ArrayList<>());
 

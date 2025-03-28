@@ -44,9 +44,8 @@ class ProductTests {
 
     // Integration Test ------------------------------------------------------------------------------------------------
     @Test
-    // Clear Box Test
+    // Translucent Box Test
     public void testSaveUpdateToCSV() throws IOException {
-        // 1. Backup original content
         Path path = Paths.get("src/main/resources/catalog.txt");
         List<String> originalLines = Files.readAllLines(path);
 
