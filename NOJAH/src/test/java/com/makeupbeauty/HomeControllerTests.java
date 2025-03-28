@@ -72,6 +72,8 @@ class HomeControllerTests {
         controller.addProduct("Name", "Brand", "Description", "Category", mockImage, "", session);
 
         assertEquals(initialProductSize + 1, controller.getProducts().size());
+        int newId = controller.getProducts().getLast().getId();
+        controller.deleteProduct(newId, session);
     }
 
     @Test
@@ -110,5 +112,6 @@ class HomeControllerTests {
         int newId = controller.getProducts().getLast().getId();
         String updatePage = controller.showUpdateProductPage(newId, model, session);
         assertEquals("update-product", updatePage);
+        controller.deleteProduct(newId, session);
     }
 }
