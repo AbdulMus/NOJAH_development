@@ -6,3 +6,8 @@ id, name, brand, description, category, image, labels
 5|,|Lustreglass Sheer-Shine Lipstick|,|MAC|,|A lightweight raspberry seed- and organic extra-virgin olive oil-infused lipstick that delivers sheer and shiny colour with a long-wearing lustrous finish.|,|Lip|,|/uploads/1741231356446_lipstick.png
 6|,|Dew Blush Liquid Cream Blush|,|Saie|,|A blendable and buildable dewy, liquid cream blush that melts into cheeks for a wash of color.|,|Cheeks|,|/uploads/1743092780132_s2742989-main-zoom.png|,|Eco-Friendly;
 7|,|Vitamin C Rose Brightening and Firming Face Oil + Squalane|,|Biossance|,|A powerful, lightweight face oil with vitamin C that visibly brightens, firms, and hydrates to reveal your most radiant-looking skin.|,|Face|,|/uploads/1743092904795_s2382166-main-zoom.png|,|Eco-Friendly;Cruelty-Free
+
+9|,|AdminProduct|,|Brand|,|Desc|,|Category|,|/uploads/1743125594141_test.jpg|,|
+10|,|Name|,|Brand|,|Description|,|Category|,|/uploads/1743125594144_test.jpg|,|
+11|,|AdminProduct|,|Brand|,|Desc|,|Category|,|/uploads/1743125603194_test.jpg|,|
+12|,|Name|,|Brand|,|Description|,|Category|,|/uploads/1743125603199_test.jpg|,|

@@ -123,7 +123,7 @@ public class Product {
             boolean found = false;
 
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\|,\\|");  // Assuming "|,|" is the delimiter
+                String[] parts = line.split("\\|,\\|");
                 if (parts.length > 0 && parts[0].equals(productIdStr)) {
                     // Update the existing product entry
                     line = String.join("|,|",
@@ -132,7 +132,8 @@ public class Product {
                             this.getBrand(),
                             this.getDescription(),
                             this.getCategory(),
-                            this.getImage()
+                            this.getImage(),
+                            this.getLabelsString()
                     );
                     found = true;
                 }

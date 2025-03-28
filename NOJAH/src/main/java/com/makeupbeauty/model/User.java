@@ -129,7 +129,7 @@ public class User {
         }
     }
 
-    private String getStringFavorites() {
+    public String getStringFavorites() {
         StringBuilder updatedFavoritesBuilder = new StringBuilder();
 
         // Loop through each favorite in the favorites list

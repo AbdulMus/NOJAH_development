@@ -31,7 +31,15 @@ public class HomeController {
         loadUsersFromCSV("src/main/resources/users.csv");
     }
 
-    private Product findProduct(int productId) {
+    public List<Product> getProducts() {
+        return this.products;
+    }
+
+    public HashMap<String, User> getUsers() {
+        return users;
+    }
+
+    public Product findProduct(int productId) {
         Product foundProduct = null;
 
         // Loop through each product in the products list
@@ -492,10 +500,6 @@ public class HomeController {
     // Handle login
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-//        if (username.equals("admin") && password.equals("123")) {
-//            session.setAttribute("user", username);
-//            return "redirect:/";
-//        }
         User user = users.get(username.toUpperCase());
 
         if (user != null && user.getPassword().equals(password)) {
