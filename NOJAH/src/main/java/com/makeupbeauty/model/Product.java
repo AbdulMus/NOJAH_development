@@ -74,7 +74,7 @@ public class Product {
     }
 
     public void setLabels(List<String> labels) {
-        this.labels = new ArrayList<>();
+        this.labels = new ArrayList<>(labels);
     }
 
     public List<String> getLabels() {
