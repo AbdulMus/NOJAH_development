@@ -3,12 +3,15 @@ package com.makeupbeauty;
 import com.makeupbeauty.controller.HomeController;
 import com.makeupbeauty.model.Product;
 import com.makeupbeauty.model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -113,5 +116,23 @@ class HomeControllerTests {
         String updatePage = controller.showUpdateProductPage(newId, model, session);
         assertEquals("update-product", updatePage);
         controller.deleteProduct(newId, session);
+    }
+
+
+    // Clean Up --------------------------------------------------------------------------------------------------------
+    @AfterEach
+    void tearDown() throws IOException {
+        File uploadDir = new File("uploads/");
+        if (uploadDir.exists()) {
+            File[] files = uploadDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().contains("test.jpg")) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+        controller.getProducts().removeIf(p -> p.getId() == 999);
     }
 }

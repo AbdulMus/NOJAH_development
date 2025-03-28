@@ -14,9 +14,11 @@ if [ $? -eq 0 ]; then
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
         open http://localhost:8080/
+            mvn spring-boot:run
     else
         # Linux (uses xdg-open)
         xdg-open http://localhost:8080/
+        mvn spring-boot:run
     fi
 
 else

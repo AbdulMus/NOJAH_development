@@ -248,8 +248,6 @@ public class HomeController {
             System.err.println("Error reading CSV file: " + e.getMessage());
             logger.error(String.valueOf(e));
         }
-
-        System.out.println(products);
     }
 
     public String saveImage(MultipartFile image) throws IOException {
@@ -465,7 +463,6 @@ public class HomeController {
         for (Product product : products) {
             if (product.getId() == id) {
                 foundProduct = product;
-                System.out.println("Product Labels: " + product.getLabels()); // Debug output
                 break;
             }
         }
@@ -484,9 +481,9 @@ public class HomeController {
                 }
             }
 
-            return "product"; // Use the new template
+            return "product";
         } else {
-            return "redirect:/"; // Redirect if product not found
+            return "redirect:/";
         }
     }
 
@@ -706,7 +703,6 @@ public class HomeController {
                 }
             }
         }
-        System.out.println(allLabels);
         model.addAttribute("labels", allLabels);
         return "admin";
     }
