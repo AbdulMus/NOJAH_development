@@ -11,7 +11,9 @@ if %ERRORLEVEL% neq 0 (
 echo Build successful!
 
 :: Find the generated JAR file (excluding "original-*.jar")
-for /F "delims=" %%F in ('dir /b /s target\*.jar ^| findstr /v "original"') do set JAR_FILE=%%F
+for /F "delims=" %%F in ('dir /b /s target\*.jar ^| findstr /v "original"') do (
+    set JAR_FILE=%%F
+)
 
 if not defined JAR_FILE (
     echo Error: JAR file not found!
