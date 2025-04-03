@@ -274,10 +274,22 @@ form button {
 /*}*/
 
 /* Search Form Styles */
-.search-form {
-    margin-bottom: 40px;
+.search-input {
+    margin-top: 10px;
+    padding: 12px;
+    width: 300px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
 
+.search-input:focus {
+    border-color: hotpink;
+}
+
+/* Style for the search input */
 .search-form input[type="text"] {
     padding: 12px;
     width: 300px;
@@ -292,7 +304,8 @@ form button {
     border-color: hotpink;
 }
 
-.search-form button {
+/* Style for the search button */
+.search-button {
     padding: 12px 25px;
     background-color: deeppink;
     color: white;
@@ -303,14 +316,21 @@ form button {
     transition: background-color 0.3s ease;
 }
 
-.search-form button span {
+/* Hover effect for the search button */
+.search-button:hover {
+    background-color: #d10060;
+}
+
+/* Hover effect for the search button span */
+.search-button span {
     cursor: pointer;
     display: inline-block;
     position: relative;
     transition: 0.5s;
 }
 
-.search-form button span:after {
+/* Hover arrow transition for the button */
+.search-button:hover span:after {
     content: '\00bb';
     position: absolute;
     opacity: 0;
@@ -319,14 +339,15 @@ form button {
     transition: 0.5s;
 }
 
-.search-form button:hover span {
+.search-button:hover span {
     padding-right: 25px;
 }
 
-.search-form button:hover span:after {
+.search-button:hover span:after {
     opacity: 1;
     right: 0;
 }
+
 
 /* Product List Container */
 .product-list-container {

@@ -58,10 +58,6 @@
           </div>
           <input type="hidden" id="labelsInput" name="labels">
         </div>
-
-        <div class="image">
-          <label>Image:</label>
-        </div>
         <div class="image-container">
           <img id="newImagePreview" class="image-preview" style="display: none;"/> <!-- Initially hidden -->
         </div>
@@ -83,9 +79,9 @@
         <tr>
           <form th:action="@{/admin}" method="get" class="search-form">
             <label>
-              <input type="text" name="query" placeholder="Search for products..." required>
+              <input type="text" name="query" placeholder="Search for products..." required class="search-input">
             </label>
-            <button type="submit"><span>Search</span></button>
+            <button type="submit" class="search-button"><span>Search</span></button>
           </form>
         </tr>
         <tr th:each="product : ${products}">
