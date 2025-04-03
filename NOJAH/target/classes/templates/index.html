@@ -6,6 +6,8 @@
     <title>Makeup & Beauty</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/searchstyle.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 
 <header>
@@ -31,13 +33,13 @@
 <div class="main-container">
     <!-- Sidebar for Categories/Filters -->
     <aside class="sidebar">
-        <h3>Categories</h3>
-        <ul>
-            <li><a href="/search?query=Face">Face</a></li>
-            <li><a href="/search?query=Eye">Eye</a></li>
-            <li><a href="/search?query=Lip">Lip</a></li>
-            <li><a href="/search?query=Cheek">Cheek</a></li>
-        </ul>
+<!--        <h3>Categories</h3>-->
+<!--        <ul>-->
+<!--            <li><a href="/search?query=Face">Face</a></li>-->
+<!--            <li><a href="/search?query=Eye">Eye</a></li>-->
+<!--            <li><a href="/search?query=Lip">Lip</a></li>-->
+<!--            <li><a href="/search?query=Cheek">Cheek</a></li>-->
+<!--        </ul>-->
         <h3 class="filters">Filter Products</h3>
         <form action="/" method="get" class="filter-form">
             <label for="category">Category:</label>
@@ -60,7 +62,6 @@
                 </option>
             </select>
 
-            <!-- Change the labels-section div to this: -->
             <div class="labels-section">
                 <label for="labelSelect">Label:</label>
                 <div class="label-input-container">
@@ -84,28 +85,12 @@
                         </span>
                     </span>
                 </div>
-
                 <!-- Hidden container for label inputs that will be submitted -->
                 <div id="labelInputsContainer">
                     <input th:each="label : ${selectedLabels}"
                            type="hidden" name="label" th:value="${label}">
                 </div>
             </div>
-
-<!--            <button type="submit">Apply Filters</button>-->
-
-
-
-<!--            <label for="label">Label:</label>-->
-<!--            <select name="label" id="Label">-->
-<!--                <option value="">All Labels</option>-->
-<!--                <option th:each="label : ${labels}"-->
-<!--                        th:value="${label}"-->
-<!--                        th:text="${label}"-->
-<!--                        th:selected="${selectedLabels != null && selectedLabels.contains(label)}">-->
-<!--&lt;!&ndash;                        th:selected="${selectedLabel == label}">&ndash;&gt;-->
-<!--                </option>-->
-<!--            </select>-->
             <button type="submit">Apply Filters</button>
         </form>
 

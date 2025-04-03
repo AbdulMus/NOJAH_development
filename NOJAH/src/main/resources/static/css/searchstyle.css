@@ -97,7 +97,7 @@ nav a:hover {
 
 /* Filter Form Section */
 .filters {
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 .filter-form {
@@ -141,7 +141,22 @@ nav a:hover {
     margin-bottom: -10px;
 }
 
-.filter-form button:hover {
+
+.apply-filter button {
+    margin-top: -25px;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    background-color: #d10060;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.apply-filter button:hover {
     background-color: #b10050;
     opacity: 0.9;
 }
@@ -163,7 +178,7 @@ nav a:hover {
     opacity: 0.9;
 }
 
-/* Sidebar Links (if you still have them) */
+/* Sidebar Links */
 .sidebar ul {
     list-style: none;
     padding: 0;
@@ -184,10 +199,84 @@ nav a:hover {
     color: #aa5251;
 }
 
+/* Labels Section */
+.labels-section {
+    /*margin-top: 15px;*/
+}
+
+.labels-section label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.add-label-btn {
+    width: 100%;
+}
+
+.label-dropdown {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.label-dropdown:focus {
+    border-color: #ff599e;
+}
+
+.selected-labels {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.selected-label {
+    background-color: rgba(144, 238, 144, 0.3);
+    border-radius: 15px;
+    padding: 6px 12px 6px 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #2E8B57;
+    border: 1px solid rgba(46, 139, 87, 0.2);
+    font-weight: bold;
+}
+
+.selected-label button {
+    margin-top: -10px;
+    margin-left: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selected-label button:hover {
+    opacity: 0.7;
+}
+
+.selected-label button i {
+    font-size: 1rem; /* Adjust size of the "X" */
+    color: #888; /* Ensure the "X" has a visible color */
+}
+
 /* Search Form Styles */
 .search-form {
     margin-bottom: 20px;
-
 }
 
 .search-form input[type="text"] {
@@ -240,10 +329,6 @@ nav a:hover {
     right: 0;
 }
 
-/*.search-form button:hover {*/
-/*    opacity: 0.7;*/
-/*}*/
-
 /* Product Section */
 .product-section {
     flex: 1;
@@ -277,7 +362,6 @@ nav a:hover {
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-
     height: auto;
 }
 

@@ -626,7 +626,15 @@ public class HomeController {
 //            List<String> productLabels = product.getLabels(); // Ensure this returns a List<String>
 //            boolean matchesLabel = (label == null || label.isEmpty()) || product.getLabels().contains(label);
 //            boolean matchesLabel = (label == null || label.isEmpty()) || label.stream().anyMatch(product.getLabels()::contains);
-            boolean matchesLabel = label == null || label.isEmpty() || !Collections.disjoint(label, product.getLabels());
+            boolean matchesLabel = true;
+            if (!(label == null || label.isEmpty())) {
+                for (String labelName : label) {
+                    if (!product.getLabels().contains(labelName)) {
+                        matchesLabel = false;
+                        break;
+                    }
+                }
+            }
 
             if (matchesCategory && matchesBrand && matchesLabel) {
                 filteredResults.add(product);

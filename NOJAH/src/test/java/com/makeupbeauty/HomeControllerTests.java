@@ -306,7 +306,7 @@ class HomeControllerTests {
     @Test
     // Opaque Box Test
     void testWebsiteFlow() {
-        String homePage = controller.home(null, null, model, session);
+        String homePage = controller.home(null, null, null, model, session);
         assertEquals("index", homePage);
 
         String searchPage = controller.search("Test", null, null, null, model, session);
