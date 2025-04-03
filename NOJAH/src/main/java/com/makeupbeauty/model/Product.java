@@ -47,7 +47,7 @@ public class Product {
     }
 
     public String getBrand() {
-        return brand;
+        return this.brand;
     }
 
     public void setBrand(String brand) {

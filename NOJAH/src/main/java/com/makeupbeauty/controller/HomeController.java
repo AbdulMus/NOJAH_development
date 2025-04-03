@@ -363,15 +363,15 @@ public class HomeController {
                 String id1 = values[0].trim();
                 String imagePath = values[5].trim(); // Assuming image path is stored in column 6
                 if (id == Integer.parseInt(id1)) {
-                    System.out.println(imagePath);
+//                    System.out.println(id);
                     imagePathToDelete = imagePath; // Save image path for deletion
                     continue; // Skip writing this line
+                } else {
+//                    System.out.println(id1);
                 }
                 updatedContent.append(line).append("\n");
             }
-        } catch (Exception e) {
-            System.err.println("Error reading CSV file: " + e.getMessage());
-            logger.error(String.valueOf(e));
+        } catch (Exception _) {
         }
 
         // Write the updated content back to the file
@@ -385,7 +385,6 @@ public class HomeController {
         // Delete the image file if it exists
         if (imagePathToDelete != null) {
             deleteImage(imagePathToDelete);
-
         }
 
         for (String user : users.keySet()) {
