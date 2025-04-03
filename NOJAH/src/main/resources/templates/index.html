@@ -59,10 +59,40 @@
                         th:selected="${selectedBrand == brand}">
                 </option>
             </select>
+
+            <div class="labels-section">
+                <label for="labelSelect">Label:</label>
+                <div class="label-input-container">
+                    <select id="labelSelect" class="label-dropdown">
+                        <option value="" disabled selected>Select a label</option>
+                        <option th:each="label : ${labels}"
+                                th:value="${label}"
+                                th:text="${label}">
+                        </option>
+                    </select>
+                    <button type="button" onclick="addLabel()" class="add-label-btn">Add Label</button>
+                </div>
+
+                <div class="selected-labels" id="selectedLabelsContainer">
+                    <span th:each="label : ${selectedLabels}">
+                        <span class="selected-label">
+                            <span th:text="${label}"></span>
+                            <button type="button" onclick="removeLabel(this, '${label}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </span>
+                    </span>
+                </div>
+                <!-- Hidden container for label inputs that will be submitted -->
+                <div id="labelInputsContainer">
+                    <input th:each="label : ${selectedLabels}"
+                           type="hidden" name="label" th:value="${label}">
+                </div>
+            </div>
             <button type="submit">Apply Filters</button>
         </form>
 
-        <form action="/" method="get" class="reset-form" id="reset-form">
+        <form action="/" method="get" class="reset-form" id="reset-form" onsubmit="clearLabels()">
             <button type="submit" class="btn">Reset Filters</button>
         </form>
     </aside>
@@ -100,4 +130,76 @@
     <p>NOJAH Development Demo.</p>
 </footer>
 </body>
+<script>
+    // Label management functions
+    let selectedLabels = [];
+
+    // Initialize with any existing labels from server
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get labels from Thymeleaf-rendered hidden inputs
+        const labelInputs = document.querySelectorAll('#labelInputsContainer input[name="label"]');
+        selectedLabels = Array.from(labelInputs).map(input => input.value);
+        updateLabelsDisplay();
+    });
+
+    function addLabel() {
+        const select = document.getElementById('labelSelect');
+        const label = select.value;
+
+        if (label && !selectedLabels.includes(label)) {
+            selectedLabels.push(label);
+            updateLabelsDisplay();
+            select.value = ""; // Reset dropdown to placeholder
+        }
+    }
+
+    function removeLabel(button, label) {
+        selectedLabels = selectedLabels.filter(l => l !== label);
+        updateLabelsDisplay();
+    }
+
+    function clearLabels() {
+        selectedLabels = [];
+        updateLabelsDisplay();
+    }
+
+    function updateLabelsDisplay() {
+        const container = document.getElementById('selectedLabelsContainer');
+        const inputsContainer = document.getElementById('labelInputsContainer');
+
+        // Clear and rebuild the display
+        container.innerHTML = '';
+        inputsContainer.innerHTML = '';
+
+        selectedLabels.forEach(label => {
+            // Create visible label element
+            const labelElement = document.createElement('span');
+            labelElement.className = 'selected-label';
+
+            // Default icon class
+            let iconClass = 'fa-tag';
+
+            // Set specific icons for known labels
+            if (label.toLowerCase().includes('eco')) iconClass = 'fa-leaf';
+            if (label.toLowerCase().includes('cruelty')) iconClass = 'fa-shield-dog';
+            if (label.toLowerCase().includes('natural')) iconClass = 'fa-tree';
+
+            labelElement.innerHTML = `
+            <span>${label}</span>
+            <i class="fas ${iconClass}"></i>
+            <button type="button" onclick="removeLabel(this, '${label}')">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+            container.appendChild(labelElement);
+
+            // Create hidden input for form submission
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'label';
+            input.value = label;
+            inputsContainer.appendChild(input);
+        });
+    }
+</script>
 </html>

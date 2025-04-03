@@ -417,17 +417,7 @@ public class HomeController {
             return "redirect:/admin";
         }
 
-        ArrayList<String> allLabels = new ArrayList<>();
-        for (Product product : products) {
-            if (product.getLabels() != null && !product.getLabels().isEmpty()) {
-                for (String label : product.getLabels()) {
-                    if (!allLabels.contains(label)) {
-                        allLabels.add(label);
-                    }
-                }
-            }
-        }
-        model.addAttribute("labels", allLabels);
+        getLabels(model);
 
         model.addAttribute("product", foundProduct);
         return "update-product"; // Renders update-product.html
@@ -618,22 +608,31 @@ public class HomeController {
     @GetMapping("/")
     public String home(@RequestParam(required = false) String category,
                        @RequestParam(required = false) String brand,
+                       @RequestParam(required = false) List<String> label,
                        Model model,
                        HttpSession session) {
 
         ArrayList<Product> filteredResults = new ArrayList<>();
         Set<String> filteredCategories = new HashSet<>();
         Set<String> filteredBrands = new HashSet<>();
+        Set<String> filteredLabels = new HashSet<>();
 
         for (Product product : products) {
 
             boolean matchesCategory = (category == null || category.isEmpty()) || product.getCategory().equalsIgnoreCase(category);
             boolean matchesBrand = (brand == null || brand.isEmpty()) || product.getBrand().equalsIgnoreCase(brand);
 
-            if (matchesCategory && matchesBrand) {
+            // Check if any label matches, treating them as separate entries
+//            List<String> productLabels = product.getLabels(); // Ensure this returns a List<String>
+//            boolean matchesLabel = (label == null || label.isEmpty()) || product.getLabels().contains(label);
+//            boolean matchesLabel = (label == null || label.isEmpty()) || label.stream().anyMatch(product.getLabels()::contains);
+            boolean matchesLabel = label == null || label.isEmpty() || !Collections.disjoint(label, product.getLabels());
+
+            if (matchesCategory && matchesBrand && matchesLabel) {
                 filteredResults.add(product);
                 filteredCategories.add(product.getCategory());
                 filteredBrands.add(product.getBrand());
+                filteredLabels.addAll(product.getLabels()); // Add each label separately
             }
         }
 
@@ -641,9 +640,11 @@ public class HomeController {
         model.addAttribute("filteredResults", filteredResults);
         model.addAttribute("categories", filteredCategories);
         model.addAttribute("brands", filteredBrands);
+        model.addAttribute("labels", filteredLabels);
         model.addAttribute("selectedCategory", category);
         model.addAttribute("selectedBrand", brand);
-
+//        model.addAttribute("selectedLabels", label);
+        model.addAttribute("selectedLabels", label != null ? label : Collections.emptyList());
         return "index";
     }
 
@@ -719,6 +720,11 @@ public class HomeController {
 
         model.addAttribute("products", searchResults);
 
+        getLabels(model);
+        return "admin";
+    }
+
+    private void getLabels(Model model) {
         ArrayList<String> allLabels = new ArrayList<>();
         for (Product product : products) {
             if (product.getLabels() != null && !product.getLabels().isEmpty()) {
@@ -730,6 +736,5 @@ public class HomeController {
             }
         }
         model.addAttribute("labels", allLabels);
-        return "admin";
     }
 }
