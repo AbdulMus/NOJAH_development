@@ -321,18 +321,3 @@ footer {
     width: 100%;
     margin-top: 20px;
 }
-
-/* Responsive */
-@media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-    }
-
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-}

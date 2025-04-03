@@ -1,11 +1,9 @@
-/* General Styles */
-body {
-    font-family: 'Helvetica', sans-serif;
+/* General Reset */
+* {
     margin: 0;
     padding: 0;
-    background-color: #fafafa;
-    color: #333;
-    /*line-height: 1.6;*/
+    box-sizing: border-box;
+    font-family: 'Helvetica', sans-serif;
 }
 
 /* Header Styles */

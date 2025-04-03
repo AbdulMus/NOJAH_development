@@ -1,11 +1,9 @@
-/* Basic Styling */
-html, body {
-    height: 100%;
-    width: 100%;
+/* General Reset */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: 'Helvetica', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
 }
 
 /* Header Styles */
@@ -396,60 +394,12 @@ table button:hover {
     background-color: #b00050;
 }
 
+/* Footer */
 footer {
     text-align: center;
     padding: 15px;
     background-color: #d10060;
     color: white;
     font-size: 14px;
-    width: 100%;
     margin-top: 20px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .dashboard-container {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .form-container, .product-list-container {
-        max-width: 100%;
-    }
-
-    .name_and_brand, .category_and_image {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    form input[type="text"], form textarea, form input[type="file"] {
-        width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px 20px;
-    }
-
-    nav {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .logged-in {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .search-form {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .search-form input[type="text"] {
-        width: 100%;
-    }
 }

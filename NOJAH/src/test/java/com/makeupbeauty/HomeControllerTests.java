@@ -267,19 +267,20 @@ class HomeControllerTests {
 
         // Creating Product
         MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test".getBytes());
-        controller.addProduct("Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", mockImage, "Eco-Friendly", session);
+        controller.addProduct("Name", "Brand", "Description", "Category", mockImage, "Label", session);
         Integer id = controller.getProducts().getLast().getId();
 
         // Updating Product
         MockMultipartFile updatedMockImage = new MockMultipartFile("new image", "updatedtest.jpg", "image/jpeg", "updatedTest".getBytes());
-        controller.updateProduct(id, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", updatedMockImage, session);
+        controller.updateProduct(id, "Updated Name", "Updated Brand", "Updated Description", "Updated Category", updatedMockImage, "Updated Label", session);
         Product updatedProduct = controller.findProduct(id);
 
         // Checking if product details were updated
         assertEquals("Updated Name", updatedProduct.getName());
         assertEquals("Updated Brand", updatedProduct.getBrand());
-        assertEquals("Updated Desc", updatedProduct.getDescription());
-        assertEquals("Updated Cat", updatedProduct.getCategory());
+        assertEquals("Updated Description", updatedProduct.getDescription());
+        assertEquals("Updated Category", updatedProduct.getCategory());
+        assertEquals("Updated Label;", updatedProduct.getLabelsString());
         assertTrue(updatedProduct.getImage().startsWith("/uploads/"));
         assertTrue(updatedProduct.getImage().contains("updatedtest.jpg"));
     }
@@ -337,17 +338,17 @@ class HomeControllerTests {
     void testUpdateProductFlow() throws IOException {
         // When an admin tries to update a false product
         session.setAttribute("user", "admin");
-        String result3 = controller.updateProduct(125, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", null, session);
+        String result3 = controller.updateProduct(125, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", null, "", session);
         assertEquals("redirect:/admin", result3);
 
         // When a non-admin user tries to update a product
         session.setAttribute("user", "customer");
-        String result4 = controller.updateProduct(999, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", null, session);
+        String result4 = controller.updateProduct(999, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", null, "", session);
         assertEquals("redirect:/login", result4);
 
         // When a guest user tries to update a product
         session.removeAttribute("user");
-        String result5 = controller.updateProduct(999, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", null, session);
+        String result5 = controller.updateProduct(999, "Updated Name", "Updated Brand", "Updated Desc", "Updated Cat", null, "", session);
         assertEquals("redirect:/login", result5);
     }
 

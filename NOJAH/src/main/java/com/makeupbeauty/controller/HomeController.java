@@ -417,6 +417,18 @@ public class HomeController {
             return "redirect:/admin";
         }
 
+        ArrayList<String> allLabels = new ArrayList<>();
+        for (Product product : products) {
+            if (product.getLabels() != null && !product.getLabels().isEmpty()) {
+                for (String label : product.getLabels()) {
+                    if (!allLabels.contains(label)) {
+                        allLabels.add(label);
+                    }
+                }
+            }
+        }
+        model.addAttribute("labels", allLabels);
+
         model.addAttribute("product", foundProduct);
         return "update-product"; // Renders update-product.html
     }
@@ -429,6 +441,7 @@ public class HomeController {
                                 @RequestParam String description,
                                 @RequestParam String category,
                                 @RequestParam(required = false) MultipartFile image,
+                                @RequestParam(name = "labels", required = false) String labelsString,
                                 HttpSession session) throws IOException {
 
         if (session.getAttribute("user") == null || !"admin".equals(session.getAttribute("user"))) {
@@ -437,17 +450,31 @@ public class HomeController {
 
         for (Product product : products) {
             if (product.getId() == id) {
+                // Update basic product info
                 product.setName(name);
                 product.setBrand(brand);
                 product.setDescription(description);
                 product.setCategory(category);
 
+                // Process and update labels
+                ArrayList<String> productLabels = new ArrayList<>();
+                if (labelsString != null && !labelsString.trim().isEmpty()) {
+                    // Split by semicolon and filter out empty strings
+                    productLabels = Arrays.stream(labelsString.split(";"))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .collect(Collectors.toCollection(ArrayList::new));
+                }
+                product.setLabels(productLabels);
+
+                // Update image if provided
                 if (image != null && !image.isEmpty()) {
                     // Delete the old image
-                    deleteImage(product.getImage());  // Pass the current image path from the product
-                    String imagePath = saveImage(image);  // Save the new image and get the path
-                    product.setImage(imagePath);  // Update the product's image path
+                    deleteImage(product.getImage());
+                    String imagePath = saveImage(image);
+                    product.setImage(imagePath);
                 }
+
                 product.saveUpdateToCSV();
                 break;
             }

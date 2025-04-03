@@ -69,7 +69,7 @@ body {
     font-family: 'Helvetica', sans-serif;
     background-color: #f9f9f9;
     color: #333;
-    line-height: 1.6;
+    /*line-height: 1.6;*/
 }
 
 /* Main Content */
@@ -137,6 +137,83 @@ textarea {
     min-height: 100px;
 }
 
+/* Labels Section Styles */
+.labels-section {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #e1e8ee;
+}
+
+.labels-section h3 {
+    margin: 0 0 10px 0;
+    color: #43484D;
+    font-size: 1rem;
+}
+
+.label-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.label-input-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.label-input-container button {
+    padding: 10px 15px;
+    background-color: #5ae391;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.label-input-container button:hover {
+    background-color: #4acd81;
+}
+
+.selected-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.selected-label {
+    background-color: rgba(144, 238, 144, 0.3);
+    border-radius: 15px;
+    padding: 6px 12px 6px 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #2E8B57;
+    border: 1px solid rgba(46, 139, 87, 0.2);
+    font-weight: bold;
+}
+
+.selected-label button {
+    background: none;
+    border: none;
+    color: #d10060;
+    cursor: pointer;
+    padding: 0 0 0 5px;
+    font-size: 0.9rem;
+}
+
+.selected-label button:hover {
+    color: #a00050;
+}
+
 /* Image Upload Section */
 .image-container {
     display: flex;
@@ -185,9 +262,6 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #b3004f;
-}
 
 a button {
     text-decoration: none;
@@ -206,16 +280,4 @@ footer {
     color: white;
     font-size: 14px;
     margin-top: 20px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .form-container {
-        flex-direction: column;
-    }
-
-    .form-left, .form-right {
-        flex: 1;
-        min-width: 100%;
-    }
 }
