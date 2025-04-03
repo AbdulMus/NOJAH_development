@@ -7,6 +7,7 @@ Welcome to our Beauty Product Catalog Management System! This project helps you 
 - [Overview](#overview)
 - [Project Layout](#project-layout)
 - [Key Features](#key-features)
+- [Prerequisites](#prerequisites)
 - [How to Get Started](#how-to-get-started)
 - [Using the App](#using-the-app)
 
@@ -37,6 +38,36 @@ Our system lets you add, search, update, and delete beauty products. It also inc
 - **Responsive Frontend:** Enjoy a modern GUI (in the NOJAH folder) designed for a great user experience.
 - **Scalable Architecture:** Built with Spring Boot, it’s ready to grow with your needs.
 
+## Prerequisites
+Before you begin, ensure you have the following installed on your system:
+
+### Java Development Kit (JDK)
+- Version 23 (as specified in `pom.xml`).
+- Download and install the JDK from Oracle or OpenJDK.
+- Verify the installation:
+
+```bash
+java -version
+```
+
+### Apache Maven
+- Used to build and manage dependencies.
+- Download and install Maven from [Maven's official website](https://maven.apache.org/).
+- Verify the installation:
+
+```bash
+mvn -v
+```
+
+### Git
+- To clone the repository.
+- Download and install Git from [Git's official website](https://git-scm.com/).
+- Verify the installation:
+
+```bash
+git --version
+```
+
 ## How to Get Started
 
 1. **Clone the Repository**
@@ -49,5 +80,12 @@ Our system lets you add, search, update, and delete beauty products. It also inc
 3. **Compile the Maven project and run MakeupBeautyApplication**
     ![Alt text](img_1.png)
 
-
 4. **Visit http://localhost:8080/ in your favourite browser and that's it!**
+
+### Alternative File Start
+
+1. **Check HOW-TO-RUN for more details**
+    ![Alt text](img_2.png)
+
+## Using the App
+[User Demo](INSERT DEMO URL HERE (YT))
