@@ -252,8 +252,9 @@ The Admin Dashboard displays a list of all products with options to:
 * The product will be permanently removed from the catalog/system
 
 ## User Demo Video
-A video to help understand how to operate this website.
-https://youtu.be/5QlpfEppe0o
+User Demo: https://youtu.be/5QlpfEppe0o
+
+Admin Demo: https://youtu.be/UyOqst--AIU
 
 ## Technical Details
 
