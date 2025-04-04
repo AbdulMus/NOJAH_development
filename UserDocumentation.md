@@ -7,18 +7,34 @@ A JAVA based web application for browsing, searching, and managing makeup and be
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
-- [Usage](#usage)
+  - [Prerequisites](#prerequisites)
+  - [Setup Instructions](#setup-instructions)
+  - [Build and Run Script](#build-and-run-script)
+    - [For MacOS/Linux](#for-macos/linux)
+    - [For Windows](#for-windows)
+- [How To Use](#how-to-use)
   - [User Roles](#user-roles)
   - [Browsing Products](#browsing-products)
+    - [Homepage](#homepage)
+    - [Product Page](#product-page)
   - [Searching and Filtering](#searching-and-filtering)
+    - [Search Function](#search-function)
+    - [Filtering Products](#filtering-products)
   - [User Accounts](#user-accounts)
+    - [Creating an Account](#creating-an-account)
+    - [Logging In](#logging-in)
+    - [Logging Out](#logging-out)
   - [Managing Favourites](#managing-favourites)
+    - [Adding Products to Favourites](#adding-products-to-favourites)
+    - [Viewing Favourites](#viewing-favourites)
+    - [Removing Products from Favourites](#removing-products-from-favourites)
   - [Admin Dashboard](#admin-dashboard)
+    - [Accessing the Admin Dashboard](#accessing-the-admin-dashboard)
+    - [Adding New Products](#adding-new-products)
+    - [Managing Existing Products](#managing-existing-products)
 - [Technical Details](#technical-details)
-- [Troubleshooting](#troubleshooting)
-- [FAQs](#faqs)
-- [Contributing](#contributing)
-- [License](#license)
+  - [Project Structure](#project-structure)
+  - [Tools and Techniques Employed](#tools-and-techniques-employed)
 
 ## Overview
 
@@ -30,7 +46,7 @@ The NOJAH Makeup & Beauty Inventory Catalog is a user-friendly Spring Boot web a
 - **Product Catalog**: Browse a comprehensive collection of beauty products
 - **Search & Filter**: Find products by keywords, name, brand, category, or distinct labels
 - **User Accounts**: Register and login to access stored data
-- **Favorites System**: Save and manage your favorite products
+- **Favourites System**: Save and manage your favourite products
 - **Admin Dashboard**: Add, update, and delete products (admin only)
 
 ## Installation
@@ -126,7 +142,7 @@ The product page provides key information about a selected product:
 - Product's Detailed description
 - Product's Category
 - Products's Labels (Vegan, Cruelty-Free, Eco-Friendly or Natural)
-- IF LOGGED IN: Option to add/remove from favorites
+- IF LOGGED IN: Option to add/remove from favourites
 
 ### Searching and Filtering
 
@@ -181,15 +197,15 @@ When logged in:
 2. Click **Add to Favorites**
 
 
-#### Viewing Favorites
+#### Viewing Favourites
 
 1. Click **My Favourites** in the top right of the header
-2. View all your favorited products in a grid layout
+2. View all your favourited products in a grid layout
 
 
-#### Removing Products from Favorites
+#### Removing Products from Favourites
 
-1. On the favorites page, click **Remove** under any product
+1. On the favourites page, click **Remove** under any product
 * Alternatively, on a product details page, click **Remove from Favorites**
 
 ### Admin Dashboard
@@ -234,7 +250,9 @@ The Admin Dashboard displays a list of all products with options to:
 * Click **Delete** next to the product that will be removed
 * The product will be permanently removed from the catalog/system
 
-## Project Structure
+## Technical Details
+
+### Project Structure
 Here’s an overview of the project structure:
 
 ```plaintext
