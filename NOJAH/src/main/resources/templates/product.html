@@ -44,18 +44,9 @@
             <span th:text="${product.brand}">Product Brand</span>
             <p th:text="${product.description}">Product Description</p>
             <div th:if="${product.labels != null and !product.labels.isEmpty()}">
-                <ul class="label-list">
-                    <li th:each="label : ${product.labels}">
+                <ul class="label-list" id="productLabelList">
+                    <li th:each="label : ${product.labels}" th:attr="data-label=${label}">
                         <span th:text="${label}"></span>
-                        <i th:if="${label.equalsIgnoreCase('eco-friendly')}"
-                           class="fa-solid fa-leaf"
-                           title="Eco-friendly"></i>
-                        <i th:if="${label.equalsIgnoreCase('cruelty-free')}"
-                           class="fa-solid fa-shield-dog"
-                           title="Cruelty-free"></i>
-                        <i th:if="${label.equalsIgnoreCase('natural')}"
-                           class="fa-solid fa-tree"
-                           title="Natural"></i>
                     </li>
                 </ul>
             </div>
@@ -74,4 +65,5 @@
     <p>NOJAH Development Demo.</p>
 </footer>
 </body>
+<script src="/js/script.js"></script>
 </html>

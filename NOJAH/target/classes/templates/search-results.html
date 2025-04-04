@@ -27,13 +27,13 @@
 <div class="main-container">
   <!-- Sidebar for Categories/Filters -->
   <aside class="sidebar">
-    <h3>Categories</h3>
-    <ul>
-      <li><a href="/search?query=Face">Face</a></li>
-      <li><a href="/search?query=Eye">Eye</a></li>
-      <li><a href="/search?query=Lip">Lip</a></li>
-      <li><a href="/search?query=Cheek">Cheek</a></li>
-    </ul>
+<!--    <h3>Categories</h3>-->
+<!--    <ul>-->
+<!--      <li><a href="/search?query=Face">Face</a></li>-->
+<!--      <li><a href="/search?query=Eye">Eye</a></li>-->
+<!--      <li><a href="/search?query=Lip">Lip</a></li>-->
+<!--      <li><a href="/search?query=Cheek">Cheek</a></li>-->
+<!--    </ul>-->
     <h3 class="filters">Filter Products</h3>
     <form action="/search" method="get" class="filter-form">
       <label for="category">Category:</label>
@@ -55,6 +55,36 @@
                 th:selected="${selectedBrand == brand}">
         </option>
       </select>
+
+      <div class="labels-section">
+        <label for="labelSelect">Label:</label>
+        <div class="label-input-container">
+          <select id="labelSelect" class="label-dropdown">
+            <option value="" disabled selected>Select a label</option>
+            <option th:each="label : ${labels}"
+                    th:value="${label}"
+                    th:text="${label}">
+            </option>
+          </select>
+          <button type="button" onclick="addLabel()" class="add-label-btn">Add Label</button>
+        </div>
+
+        <div class="selected-labels" id="selectedLabelsContainer">
+                    <span th:each="label : ${selectedLabels}">
+                        <span class="selected-label">
+                            <span th:text="${label}"></span>
+                            <button type="button" onclick="removeLabel(this, '${label}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </span>
+                    </span>
+        </div>
+        <!-- Hidden container for label inputs that will be submitted -->
+        <div id="labelInputsContainer">
+          <input th:each="label : ${selectedLabels}"
+                 type="hidden" name="label" th:value="${label}">
+        </div>
+      </div>
       <input type="hidden" name="query" th:value="${query}" />
       <button type="submit">Apply Filters</button>
     </form>
@@ -100,6 +130,6 @@
 <footer>
   <p>NOJAH Development Demo.</p>
 </footer>
-
+<script src="/js/script.js"></script>
 </body>
 </html>

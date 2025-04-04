@@ -662,13 +662,14 @@ public class HomeController {
     public String search(@RequestParam String query,
                          @RequestParam(required = false) String category,
                          @RequestParam(required = false) String brand,
-                         @RequestParam(required = false) String reset,  // Added to handle reset button
+                         @RequestParam(required = false) List<String> label,
                          Model model, HttpSession session) {
 
         query = query.toLowerCase();
         ArrayList<Product> searchResults = new ArrayList<>();
         Set<String> filteredCategories = new HashSet<>();
         Set<String> filteredBrands = new HashSet<>();
+        Set<String> filteredLabels = new HashSet<>();
 
         for (Product product : products) {
             boolean matchesQuery = product.getName().toLowerCase().contains(query) ||
@@ -678,11 +679,21 @@ public class HomeController {
 
             boolean matchesCategory = (category == null || category.isEmpty()) || product.getCategory().equalsIgnoreCase(category);
             boolean matchesBrand = (brand == null || brand.isEmpty()) || product.getBrand().equalsIgnoreCase(brand);
+            boolean matchesLabel = true;
+            if (!(label == null || label.isEmpty())) {
+                for (String labelName : label) {
+                    if (!product.getLabels().contains(labelName)) {
+                        matchesLabel = false;
+                        break;
+                    }
+                }
+            }
 
-            if (matchesQuery && matchesCategory && matchesBrand) {
+            if (matchesQuery && matchesCategory && matchesBrand && matchesLabel) {
                 searchResults.add(product);
                 filteredCategories.add(product.getCategory());
                 filteredBrands.add(product.getBrand());
+                filteredLabels.addAll(product.getLabels());
             }
         }
 
@@ -691,8 +702,10 @@ public class HomeController {
         model.addAttribute("query", query);
         model.addAttribute("categories", filteredCategories);
         model.addAttribute("brands", filteredBrands);
+        model.addAttribute("labels", filteredLabels);
         model.addAttribute("selectedCategory", category);
         model.addAttribute("selectedBrand", brand);
+        model.addAttribute("selectedLabels", label != null ? label : Collections.emptyList());
 
         return "search-results";
     }
