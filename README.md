@@ -20,7 +20,6 @@ Our system lets you add, search, update, and delete beauty products. It also inc
 - Spring Boot
 - Maven
 - HTML/CSS (for frontend)
-- MySQL or H2 (if applicable)
 
 
 ## Project Layout
