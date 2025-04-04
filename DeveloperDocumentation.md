@@ -325,10 +325,7 @@ chmod +x ./build-and-run.sh
 ```
 
 ### For Windows
-```shellscript
-chmod +x ./build.bat
-./build.bat
-```
+Run the build.bat script
 
 
 ## Testing
