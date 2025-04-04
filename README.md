@@ -31,10 +31,6 @@ Our system lets you add, search, update, and delete beauty products. It also inc
     - **What’s inside?** This folder holds the early version of the backend without the GUI.
     - **Status:** Completed and ready for use
 
-- **CatalogManagementSystemLogin.java**
-    - **What’s inside?** This file has the login logic for the catalog system. It’s temporary and will be merged into the `src` folder once complete.
-    - **Note:** Delete this file after its functionality has been integrated to keep things neat.
-
 ## Key Features
 
 - **Easy Product Management:** Quickly add, update, or remove beauty products.
