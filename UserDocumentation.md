@@ -12,7 +12,7 @@ A JAVA based web application for browsing, searching, and managing makeup and be
   - [Browsing Products](#browsing-products)
   - [Searching and Filtering](#searching-and-filtering)
   - [User Accounts](#user-accounts)
-  - [Managing Favorites](#managing-favourites)
+  - [Managing Favourites](#managing-favourites)
   - [Admin Dashboard](#admin-dashboard)
 - [Technical Details](#technical-details)
 - [Troubleshooting](#troubleshooting)
