@@ -32,6 +32,7 @@ A JAVA based web application for browsing, searching, and managing makeup and be
     - [Accessing the Admin Dashboard](#accessing-the-admin-dashboard)
     - [Adding New Products](#adding-new-products)
     - [Managing Existing Products](#managing-existing-products)
+- [User Demo Video](#user-demo-video)
 - [Technical Details](#technical-details)
   - [Project Structure](#project-structure)
   - [Tools and Techniques Employed](#tools-and-techniques-employed)
@@ -249,6 +250,10 @@ The Admin Dashboard displays a list of all products with options to:
 3. Delete Products:
 * Click **Delete** next to the product that will be removed
 * The product will be permanently removed from the catalog/system
+
+## User Demo Video
+A video to help understand how to operate this website.
+https://youtu.be/5QlpfEppe0o
 
 ## Technical Details
 
