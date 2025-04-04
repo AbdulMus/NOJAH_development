@@ -15,6 +15,14 @@ Welcome to our Beauty Product Catalog Management System! This project helps you 
 
 Our system lets you add, search, update, and delete beauty products. It also includes a secure login system and will soon have a full-featured front-end GUI for a smooth, modern experience.
 
+## Tech Stack
+- Java 23
+- Spring Boot
+- Maven
+- HTML/CSS (for frontend)
+- MySQL or H2 (if applicable)
+
+
 ## Project Layout
 
 - **NOJAH**
@@ -73,6 +81,7 @@ git --version
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/AbdulMus/NOJAH_development.git
+   ```
 
 2. **Open the NOJAH folder within the root folder, NOJAH_development as a project in Intellij**
     ![Alt text](img.png)
