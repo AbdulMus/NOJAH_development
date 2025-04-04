@@ -25,11 +25,11 @@ Our system lets you add, search, update, and delete beauty products. It also inc
 
 - **NOJAH**
     - **What’s inside?** This folder contains the final version of the project with the integrated front-end GUI.
-    - **Status:** In development; this is where the production-ready version is being built.
+    - **Status:** Completed and ready for use
 
 - **src**
     - **What’s inside?** This folder holds the early version of the backend without the GUI.
-    - **Status:** In active development for testing and prototyping new features.
+    - **Status:** Completed and ready for use
 
 - **CatalogManagementSystemLogin.java**
     - **What’s inside?** This file has the login logic for the catalog system. It’s temporary and will be merged into the `src` folder once complete.
