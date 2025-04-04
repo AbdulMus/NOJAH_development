@@ -20,7 +20,7 @@
     - [Product Images](#product-images)
 - [Controllers and Routing](#controllers-and-routing)
 - [Frontend Implementation](#frontend-implementation)
-    - [Thymeleaf Templates](#Thymeleaf-templates)
+    - [Thymeleaf Templates](#thymeleaf-templates)
     - [CSS Styling](#css-styling)
     - [JavaScript](#javascript)
 - [Authentication and Authorization](#authentication-and-authorization)
@@ -325,7 +325,7 @@ chmod +x ./build-and-run.sh
 ```
 
 ### For Windows
-Run the build.bat script
+Run the `build.bat` script
 
 
 ## Testing
