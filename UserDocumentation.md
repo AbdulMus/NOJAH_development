@@ -10,7 +10,7 @@ A JAVA based web application for browsing, searching, and managing makeup and be
   - [Prerequisites](#prerequisites)
   - [Setup Instructions](#setup-instructions)
   - [Build and Run Script](#build-and-run-script)
-    - [For Mac/Linux](#for-mac/linux)
+    - [For Mac Or Linux](#for-macos-or-linux)
     - [For Windows](#for-windows)
 - [How To Use](#how-to-use)
   - [User Roles](#user-roles)
@@ -97,7 +97,7 @@ Open your web browser and go to the link: [http://localhost:8080](http://localho
 
 Next time, for convenience, you can use the included build-and-run script:
 
-#### For Mac/Linux
+#### For Mac or Linux
 ```shellscript
 chmod +x ./build-and-run.sh
 ./build-and-run.sh
