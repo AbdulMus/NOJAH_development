@@ -144,6 +144,7 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    color: #2E8B57;
 }
 
 .label-list li {
@@ -154,7 +155,7 @@ button {
     align-items: center;
     gap: 6px;
     font-size: 14px;
-    color: #5ae391;
+    color: #2f8254;
     border: 1px solid rgba(46, 139, 87, 0.2);
     box-sizing: border-box;
     min-width: 0;
@@ -167,22 +168,28 @@ button {
 }
 
 .label-list span{
-    color: #1ad88c;
+    color: #2e8656;
 }
 
-/* Icon specific styles */
-.label-list i.fa-leaf {
-    color: #2E8B57;
-    max-width: 50px;
-}
+/*!* Icon specific styles *!*/
+/*.label-list i.fa-leaf {*/
+/*    color: #2E8B57;*/
+/*    max-width: 50px;*/
+/*}*/
 
-.label-list i.fa-shield-dog {
-    color: #2E8B57;
-    max-width: 50px;
+/*.label-list i.fa-shield-dog {*/
+/*    color: #2E8B57;*/
+/*    max-width: 50px;*/
 
-}
+/*}*/
 
-.label-list i.fa-tree {
+/*.label-list i.fa-tree {*/
+/*    color: #2E8B57;*/
+/*    max-width: 50px;*/
+
+/*}*/
+
+.label-list i.fa- {
     color: #2E8B57;
     max-width: 50px;
 
@@ -190,10 +197,10 @@ button {
 
 footer {
     text-align: center;
-    padding: 15px;
+    padding: 2px;
     background-color: #d10060;
     color: white;
     font-size: 14px;
-    max-width: 100%;
+    /*width: 100%;*/
     margin-top: 20px;
 }
