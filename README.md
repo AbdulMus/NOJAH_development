@@ -88,4 +88,5 @@ git --version
     ![Alt text](img_2.png)
 
 ## Using the App
-[User Demo](INSERT DEMO URL HERE (YT))
+[User Demo](https://youtu.be/5QlpfEppe0o)
+[Admin Demo](https://youtu.be/UyOqst--AIU)
