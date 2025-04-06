@@ -1,6 +1,5 @@
 package com.makeupbeauty.model;
 
-import com.makeupbeauty.controller.HomeController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +28,8 @@ public class Product {
         this.image = image;
         this.labels = labels;
     }
+
+    // Getters and Setters
 
     public Integer getId() {
         return id;
@@ -86,6 +87,7 @@ public class Product {
         return labels;
     }
 
+    // Function to create the string of products labels
     public String getLabelsString() {
         StringBuilder sb = new StringBuilder();
         for (String label : labels) {
@@ -95,6 +97,7 @@ public class Product {
         return sb.toString();
     }
 
+    // Function to save products to Catalog file
     public void saveProductsToCSV() {
         String productLine = String.join("|,|",
                 String.valueOf(this.getId()),  // Product ID
@@ -107,13 +110,15 @@ public class Product {
         );
         // Append the new product to the CSV file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(catalogPath, true))) {
-            writer.newLine(); // Add a newline before appending the product
+            // Add a newline before appending the product
+            writer.newLine();
             writer.write(productLine);
         } catch (IOException e) {
             logger.error(String.valueOf(e));
         }
     }
 
+    // Function to save the updated version of the product to the Catalog file
     public void saveUpdateToCSV() {
         StringBuilder updatedContent = new StringBuilder();
         String productIdStr = String.valueOf(this.getId());
@@ -137,8 +142,10 @@ public class Product {
                     );
                     found = true;
                 }
-                updatedContent.append(line); // Append the line without adding a newline yet
-                updatedContent.append("\n");  // Add a newline after each line
+                // Append the line without adding a newline yet
+                updatedContent.append(line);
+                // Add a newline after each line
+                updatedContent.append("\n");
             }
 
             if (!found) {
@@ -162,6 +169,7 @@ public class Product {
         }
     }
 
+    // toString function
     @Override
     public String toString() {
         return "Product{" +

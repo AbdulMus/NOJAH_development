@@ -19,6 +19,8 @@ public class User {
         this.favorites = favorites;
     }
 
+    // Getters and Setters
+
     public String getName(){ return this.name; }
     public void setName(String name) { this.name = name; }
 
@@ -28,7 +30,7 @@ public class User {
     public ArrayList<Product> getFavorites() { return this.favorites; }
     public void setFavorites(ArrayList<Product> favorites) { this.favorites = favorites; }
 
-
+    // toString function
     @Override
     public String toString() {
         StringBuilder x = new StringBuilder("Username: " + this.name + ", Password: " + this.password + ", Favorites: ");
@@ -39,6 +41,7 @@ public class User {
         return x.toString();
     }
 
+    // Function to save user data to User file
     public void saveUserToCSV() {
         String userLine = String.join(",", this.getName(), this.getPassword(), "");
 
@@ -51,6 +54,7 @@ public class User {
         }
     }
 
+    // Function to save product to users favourites to User file
     public void addFavorite(int productId, ArrayList<Product> products) {
         // Initialize a variable to store the found product
         Product foundProduct = null;
@@ -78,6 +82,7 @@ public class User {
         printFavorites();
     }
 
+    // Function to remove product from user favourites to User file
     public void removeFavorite(Product product) {
         if (product == null) {
             return;
@@ -88,6 +93,7 @@ public class User {
 
     }
 
+    // Function to print user data to User file
     private void printFavorites() {
         List<String> lines = new ArrayList<>();
 
@@ -129,6 +135,7 @@ public class User {
         }
     }
 
+    // Function to get user favourites as a string
     public String getStringFavorites() {
         StringBuilder updatedFavoritesBuilder = new StringBuilder();
 
@@ -153,6 +160,7 @@ public class User {
         return updatedFavorites;
     }
 
+    // Function to get all user favourite products IDs
     public Set<Integer> getFavoriteProductIds() {
         //return favourite item ids
         Set<Integer> favoriteIds = new HashSet<>();
